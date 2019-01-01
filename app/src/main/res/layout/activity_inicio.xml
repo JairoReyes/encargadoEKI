@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".Inicio">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_logoeki"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="20dp"
+            android:text="@string/app_name"
+            android:textSize="40sp" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/loginUs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/expediente"
+        android:textColor="@android:color/darker_gray"
+        android:maxLines="1"
+        android:textAlignment="center"/>
+
+    <EditText
+        android:id="@+id/loginCon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/contra"
+        android:textColor="@android:color/darker_gray"
+        android:maxLines="1"
+        android:textAlignment="center"/>
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inicioSesion"
+        android:text="@string/inicio_sesion"
+        android:textColor="@color/colorPrimaryDark"/>
+
+</LinearLayout>

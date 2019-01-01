@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3748a4</color>
+    <color name="colorPrimaryDark">#4f60cd</color>
+    <color name="colorAccent">#00ab1a</color>
+    <color name="background_material_light">#dadada</color>
+    <color name="textColorPrimary">#dd09b51a</color>
+    <color name="colorControlActivated">#388e3c</color>
+    <color name="background_delete">#fa315b</color>
+    <color name="nombre_contacto">#535353</color>
+    <color name="numero_contacto">#a9a9a9</color>
+    <color name="transp">#8000FF00</color>
+</resources>

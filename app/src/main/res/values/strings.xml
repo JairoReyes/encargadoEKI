@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">EKI</string>
+    <string name="message">Enfoca el código QR de la unidad dentro del rectángulo para escanearlo.</string>
+    <string name="turn_off_flashlight">Apagar la linterna</string>
+    <string name="turn_on_flashlight">Encender la linterna</string>
+    <string name="scan">Escanear</string>
+    <string name="title_activity_main">Principal</string>
+    <string name="nombre_conductor">Gregorio Casas</string>
+    <string name="boton_panico_mensaje">Presionar el siguiente botón en caso de \n emergencia:</string>
+    <string name="boton_panico">ENVIAR ALERTA</string>
+    <string name="finalizar_viaje">Fin del viaje</string>
+    <string name="borrar_contacto">BORRAR</string>
+
+    <string name="contactos_title">Mis contactos</string>
+    <string name="ver_contactos">Ver contactos</string>
+
+    <string name="home">Principal</string>
+    <string name="registros">REGISTROS</string>
+    <string name="registro_individual">Registro individual</string>
+    <string name="open_drawer">Drawer abierto</string>
+    <string name="close_drawer">Drawer cerrado</string>
+
+    <string name="drag_paradas">Paradas cercanas</string>
+
+    <string name="nombre">Nombre del contacto</string>
+    <string name="numero">Número del contacto</string>
+    <string name="mensaje">Para modificar o eliminar, seleccione un contacto</string>
+
+    <string name="inicio_sesion">Ingresar</string>
+    <string name="olvido_pass">¿Olvidó su contraseña?</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="usuario">Usuario</string>
+    <string name="contra">Contraseña</string>
+    <string name="correo">Correo</string>
+    <string name="texto_enviar">Al presionar el botón de enviar\n recibirá un correo de confirmación de identidad</string>
+    <string name="enviar">Enviar</string>
+    <string name="tema">Recuperación de contraseña</string>
+    <string name="correo_empresa">operadoreki@gmail.com</string>
+    <string name="contraseña">laquetuquieras</string>
+
+    <string name="contenido_correo">http://eki.com</string>
+    <string name="contenido_correo2">http://soporte.eki.com</string>
+    <string name="correo_enviado">Se le ha enviado un correo confirmación, verifique su bandeja de entrada</string>
+    <string name="titulo_aplicacion">EKI</string>
+    <string name="title_activity_maps2">Maps2</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="contraseña_cambiada">Contraseña actualizada</string>
+    <string name="contraseña_invalida">Las contraseñas no concuerdan</string>
+
+    <string name="registro_instruccion">Ingrese los siguientes campos para\n poder registrarse</string>
+    <string name="nombre_usuario">Nombre</string>
+    <string name="apellido_usuario">Apellido</string>
+    <string name="edad_usuario">Edad</string>
+    <string name="correo_usuario">Correo</string>
+    <string name="contrasena_usuario">Contraseña</string>
+    <string name="contrasena_confirmada">Repita la contraseña</string>
+    <string name="registrarse_boton">Registrarse</string>
+    <string name="registro">Su cuenta ha sido registrada con éxito</string>
+    <string name="tema2">Confirmación de registro</string>
+    <string name="boton_fallo_infr">El boton "Fallo en la unidad o infraestructura" ha sido presionado</string>
+    <string name="boton_fallo_via">El boton "Vía bloqueada" ha sido presionado</string>
+    <string name="boton_fallo_eme">El boton "Emergencia" ha sido presionado</string>
+    <string name="boton_fallo_pan">El boton "Pánico" ha sido presionado</string>
+
+
+    <string name="actualizar_cont">Ingrese su nueva contraseña</string>
+    <string name="usuario_invalido">Usuario o contraseña no válidos</string>
+    <string name="mensaje_olvidar_contraseña">Para poder recuperar su contraseña, por favor ingrese al link que se muestra a continuacion.</string>
+    <string name="mensaje_registrar_usuario">Para completar tu registro, por favor da clic en el siguiente link que te redirigira a la aplicación.</string>
+    <string name="Eki">estoesunapruebapapu</string>
+
+    <string name="nombre_invalido">Nombre con caracteres no válidos</string>
+    <string name="apellido_invalido">Apellido con caracteres no válidos</string>
+    <string name="contraseña_invalida2">La contraseña no válida, caracteres no válidos</string>
+    <string name="contraseña_invalida3">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="correo_invalido">La estructura de su correo no tiene un formato válido</string>
+    <string name="edad_invalida">La edad de los usuarios debe ser al menos de 10 años, edad no válida</string>
+    <string name="campo_vacio">Es necesario que todos los campos esten llenos</string>
+    <string name="activar_ubicacion">Es necesario activar su ubicación</string>
+    <string name="expediente">Número de expediente</string>
+    <string name="aceptar">Aceptar</string>
+</resources>
