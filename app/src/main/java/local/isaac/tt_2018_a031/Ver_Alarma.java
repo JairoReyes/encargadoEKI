@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class Ver_Alarma extends AppCompatActivity {
@@ -19,6 +20,9 @@ public class Ver_Alarma extends AppCompatActivity {
         TextView fecha = (TextView) findViewById(R.id.fecha);
         TextView hora = (TextView) findViewById(R.id.hora);
         Button boton = (Button) findViewById(R.id.button);
+        ImageView imagen_alarma = (ImageView) findViewById(R.id.imagen_alarma);
+
+        imagen_alarma.setImageResource(R.drawable.descarga);
 
         //en este caso puse boton fallo emergencia
         mensaje_principal.setText(R.string.boton_fallo_eme);
