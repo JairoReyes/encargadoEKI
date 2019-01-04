@@ -3,6 +3,10 @@ package local.isaac.tt_2018_a031;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +24,8 @@ public class Registros extends AppCompatActivity {
     private Spinner mSpinner;
     private ListView listview;
     ListViewAdapter adapter;
+    private RecyclerView recyclerView;
+    private RecyclerAdapter rAdapter;
 
 
 
@@ -55,8 +61,17 @@ public class Registros extends AppCompatActivity {
                     titulos.add("este es 4");
                     imagen.add(R.drawable.descarga);
 
-                    adapter = new ListViewAdapter(Registros.this,titulos,imagen);
-                    listview.setAdapter(adapter);
+
+                    recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                    rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                    recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
+                    recyclerView.setLayoutManager(mLayoutManager);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    recyclerView.setAdapter(rAdapter);
+
+                    //adapter = new ListViewAdapter(Registros.this,titulos,imagen);
+                    //listview.setAdapter(adapter);
                 }
                 else {
 
@@ -71,8 +86,16 @@ public class Registros extends AppCompatActivity {
                     titulos.add("este es 4");
                     imagen.add(R.drawable.house);
 
-                    adapter = new ListViewAdapter(Registros.this,titulos,imagen);
-                    listview.setAdapter(adapter);
+                    recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                    rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                    recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
+                    recyclerView.setLayoutManager(mLayoutManager);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    recyclerView.setAdapter(rAdapter);
+
+                    //adapter = new ListViewAdapter(Registros.this,titulos,imagen);
+                    //listview.setAdapter(adapter);
 
                 }
             }
