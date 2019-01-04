@@ -22,10 +22,11 @@ import local.isaac.tt_2018_a031.model.Parada;
 public class Registros extends AppCompatActivity {
 
     private Spinner mSpinner;
-    private ListView listview;
     ListViewAdapter adapter;
     private RecyclerView recyclerView;
-    private RecyclerAdapter rAdapter;
+    ArrayList<String> titulos = new ArrayList<String>();
+    ArrayList<Integer> imagen = new ArrayList<Integer>();
+    private RecyclerAdapter rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);;
 
 
 
@@ -36,10 +37,11 @@ public class Registros extends AppCompatActivity {
         setContentView(R.layout.activity_registros);
 
         mSpinner = (Spinner) findViewById(R.id.mSpinner);
-        listview = (ListView) findViewById(R.id.listView);
+        //listview = (ListView) findViewById(R.id.listView);
         ArrayList<String> elementos = new ArrayList<>();
         elementos.add("Unidad de trolebús");
         elementos.add("Nombre de conductor");
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         ArrayAdapter adp = new ArrayAdapter(this,android.R.layout.simple_spinner_item,elementos);
         mSpinner.setAdapter(adp);
@@ -50,8 +52,8 @@ public class Registros extends AppCompatActivity {
                 Toast.makeText(parent.getContext(),"este es " + elemento + " " + position, Toast.LENGTH_SHORT).show();
                 if(position == 0){
 
-                    ArrayList<String> titulos = new ArrayList<String>();
-                    ArrayList<Integer> imagen = new ArrayList<Integer>();
+                    titulos.clear();
+                    imagen.clear();
                     titulos.add("este es 1");
                     imagen.add(R.drawable.descarga);
                     titulos.add("este es 2");
@@ -62,7 +64,7 @@ public class Registros extends AppCompatActivity {
                     imagen.add(R.drawable.descarga);
 
 
-                    recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                    //recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
                     rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                     recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
@@ -70,13 +72,11 @@ public class Registros extends AppCompatActivity {
                     recyclerView.setItemAnimator(new DefaultItemAnimator());
                     recyclerView.setAdapter(rAdapter);
 
-                    //adapter = new ListViewAdapter(Registros.this,titulos,imagen);
-                    //listview.setAdapter(adapter);
                 }
                 else {
 
-                    ArrayList<String> titulos = new ArrayList<String>();
-                    ArrayList<Integer> imagen = new ArrayList<Integer>();
+                    titulos.clear();
+                    imagen.clear();
                     titulos.add("este es 1");
                     imagen.add(R.drawable.house);
                     titulos.add("este es 2");
@@ -86,7 +86,7 @@ public class Registros extends AppCompatActivity {
                     titulos.add("este es 4");
                     imagen.add(R.drawable.house);
 
-                    recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                    //recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
                     rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                     recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
@@ -94,8 +94,6 @@ public class Registros extends AppCompatActivity {
                     recyclerView.setItemAnimator(new DefaultItemAnimator());
                     recyclerView.setAdapter(rAdapter);
 
-                    //adapter = new ListViewAdapter(Registros.this,titulos,imagen);
-                    //listview.setAdapter(adapter);
 
                 }
             }
@@ -107,26 +105,23 @@ public class Registros extends AppCompatActivity {
         });
 
 
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
-            public void onItemClick(AdapterView adapterView, View view, int i, long l) {
-                //Toast.makeText(getApplicationContext(), "presiono " + i, Toast.LENGTH_SHORT).show();
+            public void onClick(View view, int position) {
+
                 TextView nombre = (TextView) view.findViewById(R.id.list_row_title);
                 Intent intent = new Intent(Registros.this, Registro_Individual.class);
 
                 intent.putExtra("nombre",nombre.getText().toString());
                 startActivityForResult(intent, 0);
-            }
-        });
 
-        /*
-        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), "presiono LARGO " + i, Toast.LENGTH_SHORT).show();
-                return false;
             }
-        });
-        */
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
     }
 }
