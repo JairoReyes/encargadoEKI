@@ -14,15 +14,15 @@ public class LoginViewModel extends ViewModel {
         this.loginResponse = loginResponse;
     }
 
-    public MutableLiveData<LoginPDO> getLoginResponse(String numero, String cont, String uuid, int id_parada) {
+    public MutableLiveData<LoginPDO> getLoginResponse(String numero, String cont) {
         if(loginResponse == null){
             loginResponse = new MutableLiveData<>();
-            loadLoginResponse(numero,cont,uuid,id_parada);
+            loadLoginResponse(numero,cont);
         }
         return loginResponse;
     }
 
-    private void loadLoginResponse(String numero, String cont, String uuid, int id_parada){
+    private void loadLoginResponse(String numero, String cont){
         RepositoryRetrofit repositoryRetrofit = new RepositoryRetrofit();
         loginResponse = repositoryRetrofit.getLoginRequest(numero,cont);
     }
