@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 public interface APIInterface {
 
 
-    @POST("iniciarViaje")
+    @POST("iniciarSesion")
     Call<LoginPDO> loginTerminal(@Body LoginRequest loginRequest);
 
 }
