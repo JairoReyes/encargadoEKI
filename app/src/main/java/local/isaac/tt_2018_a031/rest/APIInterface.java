@@ -8,7 +8,6 @@ import retrofit2.http.POST;
 
 public interface APIInterface {
 
-
     @POST("iniciarSesion")
     Call<LoginPDO> loginTerminal(@Body LoginRequest loginRequest);
 
