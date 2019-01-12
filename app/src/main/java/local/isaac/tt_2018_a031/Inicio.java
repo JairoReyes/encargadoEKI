@@ -64,8 +64,8 @@ public class Inicio extends AppCompatActivity {
                     errorLogin.show();
                 }
 
-                Intent intent = new Intent(v.getContext(), Maps.class);
-                startActivityForResult(intent, 0);
+                //Intent intent = new Intent(v.getContext(), Maps.class);
+                //startActivityForResult(intent, 0);
             }
         });
 
