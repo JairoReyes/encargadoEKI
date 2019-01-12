@@ -32,8 +32,8 @@ public class Inicio extends AppCompatActivity {
     private String expedienteText;
     private String passText;
 
-    private String regexExpediente = "\\d{5}";
-    private String regexContrasena = "^[\\w@\\\\#$%&*()+]{8,}$";
+    private String regexExpediente = "^[\\w@\\\\#$%&,*.()+]*$";
+    private String regexContrasena = "^[\\w@\\\\#$%&,*.()+]{8,}$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
