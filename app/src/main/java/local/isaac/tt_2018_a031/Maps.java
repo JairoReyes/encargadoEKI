@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -37,9 +38,6 @@ import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import local.isaac.tt_2018_a031.controller.DrawerHeader;
 import local.isaac.tt_2018_a031.controller.DrawerMenuItem;
@@ -255,8 +253,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
     private void setupDrawer(){
         SharedPreferences pref = getSharedPreferences(Inicio.preferencias, Context.MODE_PRIVATE);
-        String nombre = pref.getString("nameKey", null);
-        String mail = pref.getString("mailKey", null);
+        String nombre = pref.getString("nombre", null);
+        String mail = pref.getString("expediente", null);
         mDrawerView
                 .addView(new DrawerHeader(nombre, mail))
                 .addView(new DrawerMenuItem(this, DrawerMenuItem.DRAWER_MENU_ITEM_REGISTROS))

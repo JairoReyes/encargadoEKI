@@ -115,14 +115,14 @@ public class Inicio extends AppCompatActivity {
 
     public void saveData(String nombre,String apellido,String edad,String expediente,String id_usuario){
 
-        SharedPreferences pref = getSharedPreferences("LoginPreferences",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
+        SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putString("nombre", nombre);
         editor.putString("apellido", apellido);
         editor.putString("edad",edad);
         editor.putString("expediente", expediente);
         editor.putString("id_usuario",id_usuario);
-        editor.apply();
+        editor.putBoolean("activity_executed", true);
+        editor.commit();
 
         Intent intent = new Intent(this, Maps.class);
         startActivity(intent);

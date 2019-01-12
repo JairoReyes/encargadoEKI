@@ -58,4 +58,7 @@ dependencies {
 
     //ViewModel
     implementation 'android.arch.lifecycle:extensions:1.1.1'
+
+    //piccaso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }

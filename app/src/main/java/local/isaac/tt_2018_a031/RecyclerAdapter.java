@@ -8,13 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<String> titulos;
-    ArrayList<Integer> imagenes;
+    ArrayList<String> imagenes;
     LayoutInflater inflater;
     //private List<Movie> moviesList;
 
@@ -35,7 +37,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         this.moviesList = moviesList;
     }
 */
-    public RecyclerAdapter(Context context, ArrayList<String> titulos, ArrayList<Integer> imagenes) {
+    public RecyclerAdapter(Context context, ArrayList<String> titulos, ArrayList<String> imagenes) {
         this.context = context;
         this.titulos = titulos;
         this.imagenes = imagenes;
@@ -54,7 +56,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         //Movie movie = moviesList.get(position);
         holder.title.setText(titulos.get(position));
         //holder.genre.setText(movie.getGenre());
-        holder.image.setImageResource(imagenes.get(position));
+        Picasso.get().load("https://media.licdn.com/dms/image/C4E03AQFjrUNGgBSJ1w/profile-displayphoto-shrink_200_200/0?e=1549497600&v=beta&t=LyEcEQzk4Uyk7xA4QEuwSmRD9LnONOxY4ux6_RQvJjw").into(holder.image);
+        //holder.image.setImageResource(imagenes.get(position));
         //holder.year.setText(movie.getYear());
     }
 
