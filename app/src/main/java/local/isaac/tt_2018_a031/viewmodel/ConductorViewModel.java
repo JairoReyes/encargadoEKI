@@ -10,19 +10,19 @@ public class ConductorViewModel extends ViewModel {
 
     public MutableLiveData<ConductorPDO> conductorResponse;
 
-    public void setLoginResponse(MutableLiveData<ConductorPDO> conductorResponse) {
+    public void setConductorResponse(MutableLiveData<ConductorPDO> conductorResponse) {
         this.conductorResponse = conductorResponse;
     }
 
     public MutableLiveData<ConductorPDO> getConductorResponse() {
         if(conductorResponse == null){
             conductorResponse = new MutableLiveData<>();
-            loadLoginResponse();
+            loadConductorResponse();
         }
         return conductorResponse;
     }
 
-    private void loadLoginResponse(){
+    private void loadConductorResponse(){
         RepositoryRetrofit repositoryRetrofit = new RepositoryRetrofit();
         conductorResponse = repositoryRetrofit.getConductorRequest();
     }

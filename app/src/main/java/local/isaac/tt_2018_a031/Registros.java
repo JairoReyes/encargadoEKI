@@ -22,11 +22,15 @@ import java.util.List;
 
 import local.isaac.tt_2018_a031.PDO.ConductorPDO;
 import local.isaac.tt_2018_a031.PDO.ConductorRegistro;
+import local.isaac.tt_2018_a031.PDO.TrolebusPDO;
+import local.isaac.tt_2018_a031.PDO.TrolebusRegistro;
 import local.isaac.tt_2018_a031.viewmodel.ConductorViewModel;
+import local.isaac.tt_2018_a031.viewmodel.TrolebusViewModel;
 
 public class Registros extends AppCompatActivity {
 
     private ConductorViewModel conductorViewModel;
+    private TrolebusViewModel trolebusViewModel;
     public static final String preferencias = "MyPrefs" ;
     SharedPreferences sharedpreferences;
     private Spinner mSpinner;
@@ -47,6 +51,7 @@ public class Registros extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         sharedpreferences = getSharedPreferences(preferencias, Context.MODE_PRIVATE);
         conductorViewModel = ViewModelProviders.of(this).get(ConductorViewModel.class);
+        trolebusViewModel = ViewModelProviders.of(this).get(TrolebusViewModel.class);
         mSpinner = (Spinner) findViewById(R.id.mSpinner);
         //listview = (ListView) findViewById(R.id.listView);
         ArrayList<String> elementos = new ArrayList<>();
@@ -66,53 +71,19 @@ public class Registros extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String elemento = (String) mSpinner.getAdapter().getItem(position);
                 Toast.makeText(parent.getContext(),"este es " + elemento + " " + position, Toast.LENGTH_SHORT).show();
+                titulos.clear();
+                imagen.clear();
                 if(position == 0){
-                    ////////////trolebus
-                    titulos.clear();
-                    imagen.clear();
-                    titulos.add("este es 1");
-                    //imagen.add(R.drawable.descarga);
-                    titulos.add("este es 2");
-                    //imagen.add(R.drawable.descarga);
-                    titulos.add("este es 3");
-                    //imagen.add(R.drawable.descarga);
-                    titulos.add("este es 4");
-                    //imagen.add(R.drawable.descarga);
-
-
-                    //recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-                    rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                    recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    recyclerView.setAdapter(rAdapter);
-
+                    ////TROLEBUS
+                    trolebusViewModel.getTrolebusResponse().observe(Registros.this, (TrolebusPDO trolebusResponse) -> {
+                        procesarRespuestaTrolebus(trolebusResponse);
+                    });
                 }
                 else {
-
-                    titulos.clear();
-                    imagen.clear();
-                    ///////CONDUCTORES
-
-
+                    ///CONDUCTORES
                     conductorViewModel.getConductorResponse().observe(Registros.this, (ConductorPDO conductorResponse) -> {
-
-                        Toast toast1 = Toast.makeText(getApplicationContext(),"hola" + conductorResponse.getConductorResponse().toString(), Toast.LENGTH_SHORT);
-                        toast1.show();
-                        //procesarRespuesta(conductorResponse);
+                        procesarRespuestaConductor(conductorResponse);
                     });
-
-
-                    //recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-                    rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                    recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    recyclerView.setAdapter(rAdapter);
-
-
                 }
             }
 
@@ -144,88 +115,66 @@ public class Registros extends AppCompatActivity {
     }
 
 
-    public void procesarRespuesta(ConductorPDO conductorResponse){
+    public void procesarRespuestaConductor(ConductorPDO conductorResponse){
         if(conductorResponse.getConductorResponse() != null){
             List<ConductorRegistro> conductores = conductorResponse.getConductorResponse().getListaCondcutor();
-            for(ConductorRegistro conductor: conductores){
-                //conductor.getApellido();
-                //conductor.getFoto();
+            for(ConductorRegistro conductor: conductores)
+                saveDataConductor(conductor.getNombre(),conductor.getFoto());
 
-                Toast fail = Toast.makeText(this, conductor.getNombre() + conductor.getFoto(), Toast.LENGTH_LONG);
-                fail.show();
-                saveData(conductor.getNombre(),conductor.getFoto());
-            }
-            /*
-            String nombre = conductorResponse.getConductorResponse().getNombre();
-            String apellido = conductorResponse.getConductorResponse().getApellido();
-            String edad = conductorResponse.getConductorResponse().getEdad();
-            String expediente = conductorResponse.getConductorResponse().getExpediente();
-            String idUsuario = conductorResponse.getConductorResponse().getIdUsuario();
-            String foto = conductorResponse.getConductorResponse().getFoto();
-            */
-
-
-        }
-        else if(conductorResponse.getError().getText().startsWith("Fallo en la conexión")){
-            //expediente.setText("");
-            //pass.setText("");
-            conductorViewModel.setLoginResponse(null);
-            Toast fail = Toast.makeText(this, conductorResponse.getError().getText(), Toast.LENGTH_SHORT);
-            fail.show();
+            rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(rAdapter);
         }
         else{
-            Toast httpError = Toast.makeText(this, conductorResponse.getError().getText(), Toast.LENGTH_SHORT);
+            Toast httpError = Toast.makeText(this, "Fallo al recibir conductores", Toast.LENGTH_SHORT);
             httpError.show();
-            conductorViewModel.setLoginResponse(null);
+            conductorViewModel.setConductorResponse(null);
+        }
+    }
+
+    public void procesarRespuestaTrolebus(TrolebusPDO trolebusResponse){
+        if(trolebusResponse.getTrolebusResponse() != null){
+            List<TrolebusRegistro> trolebuses = trolebusResponse.getTrolebusResponse().getListaTrolebus();
+            for(TrolebusRegistro trolebus: trolebuses)
+                saveDataTrolebus(trolebus.getIdtrolebus());
+
+            rAdapter = new RecyclerAdapter(Registros.this,titulos);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(rAdapter);
+        }
+        else{
+            Toast httpError = Toast.makeText(this, "Fallo al recibir conductores", Toast.LENGTH_SHORT);
+            httpError.show();
+            conductorViewModel.setConductorResponse(null);
         }
     }
 
 
-    public void saveData(String nombre,String foto){
+    public void saveDataConductor(String nombre,String foto){
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
         editor.putString("nombre", nombre);
-        //editor.putString("apellido", apellido);
-        //editor.putString("edad",edad);
-        //editor.putString("expediente", expediente);
-        //editor.putString("id_usuario",id_usuario);
         editor.putString("foto",foto);
         editor.putBoolean("activity_executed", true);
         editor.commit();
-
-        //imagen.add(DescargarImagen((ImageView) findViewById(R.id.imageView1)).execute("https://www.365imagenesbonitas.com/wp-content/uploads/2014/07/imagenes-positivas-300x225.jpg"));
-        //Bitmap obtener_imagen = get_imagen("https://www.365imagenesbonitas.com/wp-content/uploads/2014/07/imagenes-positivas-300x225.jpg");
-        //tuImageView.setImageBitmap(obtener_imagen);
         titulos.add(nombre);
-        //imagen.add(obtener_imagen);
-        //imagen.add();
         imagen.add(foto);
-        /*titulos.add("este es 2");
-        imagen.add(R.drawable.house);
-        titulos.add("este es 3");
-        imagen.add(R.drawable.house);
-        titulos.add("este es 4");
-        imagen.add(R.drawable.house);*/
 
     }
 
-/*
-    private Bitmap get_imagen(String url) {
-        Bitmap bm = null;
-        try {
-            URL _url = new URL(url);
-            URLConnection con = _url.openConnection();
-            con.connect();
-            InputStream is = con.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
-            bm = BitmapFactory.decodeStream(bis);
-            bis.close();
-            is.close();
-        } catch (IOException e) {
+    public void saveDataTrolebus(String idtrolebus){
+        SharedPreferences.Editor editor = sharedpreferences.edit();
 
-        }
-        return bm;
+        editor.putString("id_trolebus",idtrolebus);
+        editor.putBoolean("activity_executed",true);
+        editor.commit();
+        titulos.add(idtrolebus);
     }
-    */
 }

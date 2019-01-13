@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ConductorResponse {
 
-    @SerializedName("lista")
+    @SerializedName("list")
     private List<ConductorRegistro> listaCondcutor;
 
     public ConductorResponse(){

@@ -43,6 +43,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         this.imagenes = imagenes;
     }
 
+    public RecyclerAdapter(Context context, ArrayList<String> titulos) {
+        this.context = context;
+        this.titulos = titulos;
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -56,9 +61,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         //Movie movie = moviesList.get(position);
         holder.title.setText(titulos.get(position));
         //holder.genre.setText(movie.getGenre());
-        Picasso.get().load("https://media.licdn.com/dms/image/C4E03AQFjrUNGgBSJ1w/profile-displayphoto-shrink_200_200/0?e=1549497600&v=beta&t=LyEcEQzk4Uyk7xA4QEuwSmRD9LnONOxY4ux6_RQvJjw").into(holder.image);
-        //holder.image.setImageResource(imagenes.get(position));
-        //holder.year.setText(movie.getYear());
+        if(imagenes == null)
+            Picasso.get().load(R.drawable.descarga).into(holder.image);
+        else
+            Picasso.get().load(imagenes.get(position)).into(holder.image);
     }
 
     @Override
