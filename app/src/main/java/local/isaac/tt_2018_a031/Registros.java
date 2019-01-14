@@ -70,7 +70,6 @@ public class Registros extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String elemento = (String) mSpinner.getAdapter().getItem(position);
-                Toast.makeText(parent.getContext(),"este es " + elemento + " " + position, Toast.LENGTH_SHORT).show();
                 titulos.clear();
                 imagen.clear();
                 if(position == 0){

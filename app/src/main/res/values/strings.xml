@@ -83,4 +83,8 @@
     <string name="activar_ubicacion">Es necesario activar su ubicación</string>
     <string name="expediente">Número de expediente</string>
     <string name="aceptar">Aceptar</string>
+    <string name="fecha_inicio">Fecha inicial</string>
+    <string name="fecha_prueba">01/01/1999</string>
+    <string name="fecha_final">Fecha final</string>
+    <string name="fecha_erronea">La fecha final no puede ser menor que la de inicio. Verificar nuevamente la fecha final</string>
 </resources>
