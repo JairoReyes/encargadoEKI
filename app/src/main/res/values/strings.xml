@@ -86,5 +86,16 @@
     <string name="fecha_inicio">Fecha inicial</string>
     <string name="fecha_prueba">01/01/1999</string>
     <string name="fecha_final">Fecha final</string>
-    <string name="fecha_erronea">La fecha final no puede ser menor que la de inicio. Verificar nuevamente la fecha final</string>
+    <string name="fecha_erronea">La fecha final no puede ser menor que la de inicio. Verificar nuevamente la fecha final o inicial</string>
+    <string name="placa">Placa:</string>
+    <string name="modelo">Modelo:</string>
+    <string name="fecha_inicial">Fecha de inicio: </string>
+    <string name="paradaI">Parada de inicio:</string>
+    <string name="fecha_fin">Fecha de termino:</string>
+    <string name="paradaF">Parada final:</string>
+    <string name="tiempo">Tiempo de recorrido:</string>
+    <string name="cali">Calificación:</string>
+    <string name="fecha_erronea2">La fecha inicial no puede ser mayor que la final. Verificar nuevamente la fecha inicial o final</string>
+    <string name="apellido">Apellido:</string>
+    <string name="nombre2">Nombre:</string>
 </resources>

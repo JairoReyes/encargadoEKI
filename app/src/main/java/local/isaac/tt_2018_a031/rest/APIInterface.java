@@ -3,6 +3,10 @@ package local.isaac.tt_2018_a031.rest;
 import local.isaac.tt_2018_a031.PDO.ConductorPDO;
 import local.isaac.tt_2018_a031.PDO.LoginPDO;
 import local.isaac.tt_2018_a031.PDO.LoginRequest;
+import local.isaac.tt_2018_a031.PDO.RegistroConductorPDO;
+import local.isaac.tt_2018_a031.PDO.RegistroConductorRequest;
+import local.isaac.tt_2018_a031.PDO.RegistroTrolebusPDO;
+import local.isaac.tt_2018_a031.PDO.RegistroTrolebusRequest;
 import local.isaac.tt_2018_a031.PDO.TrolebusPDO;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -19,5 +23,11 @@ public interface APIInterface {
 
     @GET("trolebuses")
     Call<TrolebusPDO> trolebuses();
+
+    @POST("conductorRegistros")
+    Call<RegistroConductorPDO> registrosConductores(@Body RegistroConductorRequest registroConductorRequest);
+
+    @POST("trolebusRegistros")
+    Call<RegistroTrolebusPDO> registrosTrolebuses(@Body RegistroTrolebusRequest registroTrolebusRequest);
 
 }

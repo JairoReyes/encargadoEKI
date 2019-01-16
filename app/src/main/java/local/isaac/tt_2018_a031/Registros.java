@@ -38,7 +38,9 @@ public class Registros extends AppCompatActivity {
     private RecyclerView recyclerView;
     ArrayList<String> titulos = new ArrayList<String>();
     ArrayList<String> imagen = new ArrayList<String>();
-    private RecyclerAdapter rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);;
+    ArrayList<String> ids = new ArrayList<String>();
+    private RecyclerAdapter rAdapter;
+    private int bandera= 0;
 
 
 
@@ -58,6 +60,9 @@ public class Registros extends AppCompatActivity {
         elementos.add("Unidad de trolebús");
         elementos.add("Nombre de conductor");
 
+        rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen,ids);
+
+
 
 
 
@@ -72,14 +77,19 @@ public class Registros extends AppCompatActivity {
                 String elemento = (String) mSpinner.getAdapter().getItem(position);
                 titulos.clear();
                 imagen.clear();
+                ids.clear();
                 if(position == 0){
+                    bandera = 0;
                     ////TROLEBUS
+                    trolebusViewModel.setTrolebusResponse(null);
                     trolebusViewModel.getTrolebusResponse().observe(Registros.this, (TrolebusPDO trolebusResponse) -> {
                         procesarRespuestaTrolebus(trolebusResponse);
                     });
                 }
                 else {
+                    bandera = 1;
                     ///CONDUCTORES
+                    conductorViewModel.setConductorResponse(null);
                     conductorViewModel.getConductorResponse().observe(Registros.this, (ConductorPDO conductorResponse) -> {
                         procesarRespuestaConductor(conductorResponse);
                     });
@@ -97,11 +107,19 @@ public class Registros extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
 
-                TextView nombre = (TextView) view.findViewById(R.id.list_row_title);
-                Intent intent = new Intent(Registros.this, Registro_Individual.class);
 
-                intent.putExtra("nombre",nombre.getText().toString());
-                startActivityForResult(intent, 0);
+                TextView nombre = (TextView) view.findViewById(R.id.list_row_id);
+
+                if(bandera == 1) {
+                    Intent intent = new Intent(Registros.this, Registro_Individual_Conductor.class);
+                    intent.putExtra("id", nombre.getText().toString());
+                    startActivityForResult(intent, 0);
+                }
+                else if (bandera == 0){
+                    Intent intent = new Intent(Registros.this, Registro_Individual_Trolebus.class);
+                    intent.putExtra("id", nombre.getText().toString());
+                    startActivityForResult(intent, 0);
+                }
 
             }
 
@@ -117,10 +135,15 @@ public class Registros extends AppCompatActivity {
     public void procesarRespuestaConductor(ConductorPDO conductorResponse){
         if(conductorResponse.getConductorResponse() != null){
             List<ConductorRegistro> conductores = conductorResponse.getConductorResponse().getListaCondcutor();
-            for(ConductorRegistro conductor: conductores)
-                saveDataConductor(conductor.getNombre(),conductor.getFoto());
 
-            rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen);
+            if(conductores != null) {
+                for (ConductorRegistro conductor : conductores)
+                    saveDataConductor(conductor.getNombre(), conductor.getFoto(), conductor.getIdUsuario());
+            }
+            else
+                Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
+
+            rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen,ids);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
             recyclerView.setLayoutManager(mLayoutManager);
@@ -137,10 +160,15 @@ public class Registros extends AppCompatActivity {
     public void procesarRespuestaTrolebus(TrolebusPDO trolebusResponse){
         if(trolebusResponse.getTrolebusResponse() != null){
             List<TrolebusRegistro> trolebuses = trolebusResponse.getTrolebusResponse().getListaTrolebus();
-            for(TrolebusRegistro trolebus: trolebuses)
-                saveDataTrolebus(trolebus.getIdtrolebus());
 
-            rAdapter = new RecyclerAdapter(Registros.this,titulos);
+            if(trolebuses != null) {
+                for (TrolebusRegistro trolebus : trolebuses)
+                    saveDataTrolebus(trolebus.getPlaca(), trolebus.getIdtrolebus());
+            }
+            else
+                Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
+
+            rAdapter = new RecyclerAdapter(Registros.this,titulos,ids);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
             recyclerView.setLayoutManager(mLayoutManager);
@@ -155,25 +183,29 @@ public class Registros extends AppCompatActivity {
     }
 
 
-    public void saveDataConductor(String nombre,String foto){
+    public void saveDataConductor(String nombre,String foto, String id){
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
         editor.putString("nombre", nombre);
         editor.putString("foto",foto);
+        editor.putString("id",id);
         editor.putBoolean("activity_executed", true);
         editor.commit();
         titulos.add(nombre);
         imagen.add(foto);
+        ids.add(id);
 
     }
 
-    public void saveDataTrolebus(String idtrolebus){
+    public void saveDataTrolebus(String placa,String id){
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
-        editor.putString("id_trolebus",idtrolebus);
+        editor.putString("id_trolebus",id);
+        editor.putString("placa",placa);
         editor.putBoolean("activity_executed",true);
         editor.commit();
-        titulos.add(idtrolebus);
+        titulos.add(placa);
+        ids.add(id);
     }
 }

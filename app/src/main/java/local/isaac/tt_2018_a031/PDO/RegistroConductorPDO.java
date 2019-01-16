@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class RegistroConductorPDO {
 
-    @SerializedName("conductorResgistrosResponse")
+    @SerializedName("conductorRegistrosResponse")
     private RegistroConductorResponse registroConductorResponse;
 
 

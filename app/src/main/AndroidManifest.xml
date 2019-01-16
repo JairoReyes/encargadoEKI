@@ -45,7 +45,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Registros" />
-        <activity android:name=".Registro_Individual" />
+        <activity android:name=".Registro_Individual_Conductor" />
+        <activity android:name=".Registro_Individual_Trolebus" />
         <activity android:name=".Ver_Alarma" android:theme="@style/Theme.Transparent"></activity>
     </application>
 

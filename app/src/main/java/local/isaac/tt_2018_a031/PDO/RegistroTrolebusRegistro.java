@@ -2,13 +2,13 @@ package local.isaac.tt_2018_a031.PDO;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RegistroConductorRegistro {
+public class RegistroTrolebusRegistro {
 
-    @SerializedName("placa")
-    private String placa;
+    @SerializedName("nombre")
+    private String nombre;
 
-    @SerializedName("modelo")
-    private String modelo;
+    @SerializedName("apellido")
+    private String apellido;
 
     @SerializedName("inicio")
     private String fecha_inicio;
@@ -28,12 +28,12 @@ public class RegistroConductorRegistro {
     @SerializedName("calificacion")
     private String calificacion;
 
-    public RegistroConductorRegistro(){
+    public RegistroTrolebusRegistro(){
     }
 
-    public RegistroConductorRegistro(String placa, String modelo, String fecha_inicio, String parada_inicio, String fecha_fin, String parada_fin, String tiempo, String calificacion){
-        this.placa = placa;
-        this.modelo = modelo;
+    public RegistroTrolebusRegistro(String nombre, String apellido, String fecha_inicio, String parada_inicio, String fecha_fin, String parada_fin, String tiempo, String calificacion){
+        this.nombre = nombre;
+        this.apellido= apellido;
         this.fecha_inicio = fecha_inicio;
         this.parada_inicio = parada_inicio;
         this.fecha_fin = fecha_fin;
@@ -42,20 +42,20 @@ public class RegistroConductorRegistro {
         this.calificacion = calificacion;
     }
 
-    public String getPlaca() {
-        return placa;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setPlaca(String placa) {
-        this.placa = placa;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getModelo() {
-        return modelo;
+    public String getApellido() {
+        return apellido;
     }
 
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
     public String getFecha_inicio() {

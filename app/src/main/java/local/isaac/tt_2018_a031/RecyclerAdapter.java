@@ -17,17 +17,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     Context context;
     ArrayList<String> titulos;
     ArrayList<String> imagenes;
+    ArrayList<String> ids;
     LayoutInflater inflater;
     //private List<Movie> moviesList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
+        public TextView title,ids;
         public ImageView image;
 
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.list_row_title);
             image = (ImageView) view.findViewById(R.id.list_row_image);
+            ids = (TextView) view.findViewById(R.id.list_row_id);
             //year = (TextView) view.findViewById(R.id.year);
         }
     }
@@ -37,15 +39,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         this.moviesList = moviesList;
     }
 */
-    public RecyclerAdapter(Context context, ArrayList<String> titulos, ArrayList<String> imagenes) {
+    public RecyclerAdapter(Context context, ArrayList<String> titulos, ArrayList<String> imagenes, ArrayList<String> ids) {
         this.context = context;
         this.titulos = titulos;
         this.imagenes = imagenes;
+        this.ids = ids;
     }
 
-    public RecyclerAdapter(Context context, ArrayList<String> titulos) {
+    public RecyclerAdapter(Context context, ArrayList<String> titulos, ArrayList<String> ids) {
         this.context = context;
         this.titulos = titulos;
+        this.ids = ids;
     }
 
     @Override
@@ -60,6 +64,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         //Movie movie = moviesList.get(position);
         holder.title.setText(titulos.get(position));
+        holder.ids.setText(ids.get(position));
         //holder.genre.setText(movie.getGenre());
         if(imagenes == null)
             Picasso.get().load(R.drawable.descarga).into(holder.image);

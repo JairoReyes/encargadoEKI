@@ -2,9 +2,10 @@ package local.isaac.tt_2018_a031.PDO;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RegistroConductorRequest {
-    @SerializedName("id_usuario")
-    private String idusuario;
+public class RegistroTrolebusRequest {
+
+    @SerializedName("id_trolebus")
+    private String idtrolebus;
 
     @SerializedName("inicio")
     private String inicio;
@@ -12,21 +13,21 @@ public class RegistroConductorRequest {
     @SerializedName("fin")
     private String fin;
 
-    public RegistroConductorRequest(){
+    public RegistroTrolebusRequest(){
     }
 
-    public RegistroConductorRequest(String idusuario, String inicio, String fin){
-        this.idusuario = idusuario;
+    public RegistroTrolebusRequest(String idtrolebus, String inicio, String fin){
+        this.idtrolebus = idtrolebus;
         this.inicio = inicio;
         this.fin = fin;
     }
 
-    public String getIdusuario() {
-        return idusuario;
+    public String getIdtrolebus() {
+        return idtrolebus;
     }
 
-    public void setIdusuario(String idusuario) {
-        this.idusuario = idusuario;
+    public void setIdtrolebus(String idtrolebus) {
+        this.idtrolebus = idtrolebus;
     }
 
     public String getInicio() {

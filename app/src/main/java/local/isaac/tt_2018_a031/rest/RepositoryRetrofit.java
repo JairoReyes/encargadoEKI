@@ -6,6 +6,10 @@ import local.isaac.tt_2018_a031.PDO.ConductorPDO;
 import local.isaac.tt_2018_a031.PDO.Error;
 import local.isaac.tt_2018_a031.PDO.LoginPDO;
 import local.isaac.tt_2018_a031.PDO.LoginRequest;
+import local.isaac.tt_2018_a031.PDO.RegistroConductorPDO;
+import local.isaac.tt_2018_a031.PDO.RegistroConductorRequest;
+import local.isaac.tt_2018_a031.PDO.RegistroTrolebusPDO;
+import local.isaac.tt_2018_a031.PDO.RegistroTrolebusRequest;
 import local.isaac.tt_2018_a031.PDO.TrolebusPDO;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -109,6 +113,73 @@ public class RepositoryRetrofit {
         });
 
         return trolebusResponse;
+    }
+
+
+
+    ///REGISTROS CONDUCTORES POR ID
+    public MutableLiveData<RegistroConductorPDO> getRegistroConductorRequest(String id_usuario, String inicio, String fin){
+
+        final MutableLiveData<RegistroConductorPDO> registroConductorResponse = new MutableLiveData<>();
+
+        RegistroConductorRequest registroConductorRequest = new RegistroConductorRequest();
+        registroConductorRequest.setIdusuario(id_usuario);
+        registroConductorRequest.setInicio(inicio);
+        registroConductorRequest.setFin(fin);
+
+        Call<RegistroConductorPDO> call = apiInterface.registrosConductores(registroConductorRequest);
+        call.enqueue(new Callback<RegistroConductorPDO>() {
+            @Override
+            public void onResponse(Call<RegistroConductorPDO> call, Response<RegistroConductorPDO> response) {
+                if(response.isSuccessful()){
+                    registroConductorResponse.postValue(response.body());
+                }else{
+                    System.out.println("No fue succesfull");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegistroConductorPDO> call, Throwable t) {
+                //Errores tales como TimeOut, se le indica al usuario que vuelva a insertar sus datos y lo vuelva a intentar
+                System.out.println("Error al recibir lista de registros del conductor");
+            }
+        });
+
+        return registroConductorResponse;
+
+    }
+
+
+    ///REGISTROS TROLEBUS POR ID
+    public MutableLiveData<RegistroTrolebusPDO> getRegistroTrolebusRequest(String id_trolebus, String inicio, String fin){
+
+        final MutableLiveData<RegistroTrolebusPDO> registroTrolebusResponse = new MutableLiveData<>();
+
+        RegistroTrolebusRequest registroTrolebusRequest = new RegistroTrolebusRequest();
+        registroTrolebusRequest.setIdtrolebus(id_trolebus);
+        registroTrolebusRequest.setInicio(inicio);
+        registroTrolebusRequest.setFin(fin);
+
+        Call<RegistroTrolebusPDO> call = apiInterface.registrosTrolebuses(registroTrolebusRequest);
+        call.enqueue(new Callback<RegistroTrolebusPDO>() {
+            @Override
+            public void onResponse(Call<RegistroTrolebusPDO> call, Response<RegistroTrolebusPDO> response) {
+                if(response.isSuccessful()){
+                    registroTrolebusResponse.postValue(response.body());
+                }else{
+                    System.out.println("No fue succesfull");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegistroTrolebusPDO> call, Throwable t) {
+                //Errores tales como TimeOut, se le indica al usuario que vuelva a insertar sus datos y lo vuelva a intentar
+                System.out.println("Error al recibir lista de registros del conductor");
+            }
+        });
+
+        return registroTrolebusResponse;
+
     }
 }
 
