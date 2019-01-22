@@ -2,6 +2,7 @@ package local.isaac.tt_2018_a031.rest;
 
 import android.arch.lifecycle.MutableLiveData;
 
+import local.isaac.tt_2018_a031.PDO.AlertaPDO;
 import local.isaac.tt_2018_a031.PDO.ConductorPDO;
 import local.isaac.tt_2018_a031.PDO.Error;
 import local.isaac.tt_2018_a031.PDO.LoginPDO;
@@ -180,6 +181,34 @@ public class RepositoryRetrofit {
 
         return registroTrolebusResponse;
 
+    }
+
+
+
+
+    ///ALERTAS!!!!
+    public MutableLiveData<AlertaPDO> getAlertaRequest(){
+
+        final MutableLiveData<AlertaPDO> alertaResponse = new MutableLiveData<>();
+
+        Call<AlertaPDO> call = apiInterface.alertas();
+        call.enqueue(new Callback<AlertaPDO>() {
+            @Override
+            public void onResponse(Call<AlertaPDO> call, Response<AlertaPDO> response) {
+                if(response.isSuccessful()){
+                    alertaResponse.postValue(response.body());
+                }else{
+                    System.out.println("No fue successful");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AlertaPDO> call, Throwable t) {
+                System.out.println("Error al recibir lista de conductores");
+            }
+        });
+
+        return alertaResponse;
     }
 }
 

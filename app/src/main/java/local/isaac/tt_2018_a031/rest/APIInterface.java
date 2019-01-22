@@ -1,5 +1,6 @@
 package local.isaac.tt_2018_a031.rest;
 
+import local.isaac.tt_2018_a031.PDO.AlertaPDO;
 import local.isaac.tt_2018_a031.PDO.ConductorPDO;
 import local.isaac.tt_2018_a031.PDO.LoginPDO;
 import local.isaac.tt_2018_a031.PDO.LoginRequest;
@@ -29,5 +30,8 @@ public interface APIInterface {
 
     @POST("trolebusRegistros")
     Call<RegistroTrolebusPDO> registrosTrolebuses(@Body RegistroTrolebusRequest registroTrolebusRequest);
+
+    @GET("alertas")
+    Call<AlertaPDO> alertas();
 
 }
