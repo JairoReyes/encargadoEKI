@@ -1,5 +1,6 @@
 package local.isaac.tt_2018_a031.controller;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import com.mindorks.placeholderview.annotations.View;
 import local.isaac.tt_2018_a031.Inicio;
 import local.isaac.tt_2018_a031.R;
 import local.isaac.tt_2018_a031.Registros;
+import local.isaac.tt_2018_a031.ServiceAlarmas;
 import local.isaac.tt_2018_a031.SplashActivity;
 
 import android.content.SharedPreferences;
@@ -121,6 +123,7 @@ public class DrawerMenuItem {
                 if(mCallBack != null)mCallBack.onTermsMenuSelected();
                 break;*/
             case DRAWER_MENU_ITEM_LOGOUT:
+                mContext.stopService(new Intent(mContext,ServiceAlarmas.class));
                 Toast.makeText(mContext, "Sesión terminada", Toast.LENGTH_SHORT).show();
                 SharedPreferences pref = mContext.getSharedPreferences(Inicio.preferencias, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();

@@ -54,6 +54,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     private PlaceHolderView mDrawerView;
     private DrawerLayout mDrawer;
 
+
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView recyclerParadasCercanas;
     private ParadasCercanasAdapter adapterParadasCercanas;
@@ -64,7 +65,13 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal_eki);
+
+        startService(new Intent(this,ServiceAlarmas.class));
         startService(new Intent(this,LocationService.class));
+
+
+
+
         mDrawer = (DrawerLayout)findViewById(R.id.drawerLayout);
         mDrawerView = (PlaceHolderView)findViewById(R.id.drawerView);
         //recyclerParadasCercanas = (RecyclerView) findViewById(R.id.recyclerview_paradas);
@@ -77,6 +84,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         //recyclerParadasCercanas.setAdapter(adapterParadasCercanas);
 
         verificarPermisos();
+
+
 
     }
     @Override
