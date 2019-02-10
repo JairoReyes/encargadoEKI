@@ -124,6 +124,8 @@ public class Inicio extends AppCompatActivity {
         editor.putBoolean("activity_executed", true);
         editor.commit();
 
+
+        //startService(new Intent(this,ServiceAlarmas.class));
         Intent intent = new Intent(this, Maps.class);
         startActivity(intent);
         finish();

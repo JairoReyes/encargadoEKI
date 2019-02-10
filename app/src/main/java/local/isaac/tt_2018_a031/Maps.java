@@ -3,8 +3,10 @@ package local.isaac.tt_2018_a031;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,6 +15,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -66,7 +69,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal_eki);
 
-        startService(new Intent(this,ServiceAlarmas.class));
+        //startService(new Intent(this,ServiceAlarmas.class));
         startService(new Intent(this,LocationService.class));
 
 
@@ -291,4 +294,30 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     }
 
 
+/*    private MyBroadcastReceiver myBroadcastReceiver;
+
+    @Override
+    public void onResume(){
+        myBroadcastReceiver = new MyBroadcastReceiver();
+        final IntentFilter intentFilter = new IntentFilter("enviar");
+        LocalBroadcastManager.getInstance(this).registerReceiver(myBroadcastReceiver,intentFilter);
+    }
+
+    @Override
+    public void onPause(){
+        if(myBroadcastReceiver !=null)
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(myBroadcastReceiver);
+        myBroadcastReceiver = null;
+    }
+
+    public class MyBroadcastReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle b = intent.getExtras();
+            double some = b.getDouble("doblesito");
+            Toast.makeText(Maps.this,String.valueOf(some),Toast.LENGTH_SHORT).show();
+        }
+    }
+*/
 }
