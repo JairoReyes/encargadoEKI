@@ -69,7 +69,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal_eki);
 
-        //startService(new Intent(this,ServiceAlarmas.class));
+        startService(new Intent(this,ServiceAlarmas.class));
         startService(new Intent(this,LocationService.class));
 
 

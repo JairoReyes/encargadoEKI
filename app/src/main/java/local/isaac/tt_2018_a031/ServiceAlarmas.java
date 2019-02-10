@@ -29,7 +29,14 @@ import java.util.List;
 
 import local.isaac.tt_2018_a031.PDO.AlertaPDO;
 import local.isaac.tt_2018_a031.PDO.AlertaRegistro;
+import local.isaac.tt_2018_a031.PDO.ConductorPDO;
+import local.isaac.tt_2018_a031.PDO.ConductorRegistro;
+import local.isaac.tt_2018_a031.rest.APIClient;
+import local.isaac.tt_2018_a031.rest.APIInterface;
 import local.isaac.tt_2018_a031.viewmodel.AlertaViewModel;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ServiceAlarmas extends Service implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -39,6 +46,7 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
     private AlertaViewModel alertaViewModel;
     public static final String preferencias = "MyPrefs" ;
     SharedPreferences sharedpreferences;
+    private APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
 
 
 
@@ -85,7 +93,36 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
                 procesarRespuestaAlerta(alertaResponse);
             });*/
 
+            //ConductorPDO conductorPDO = new ConductorPDO();
+            Call<ConductorPDO> call = apiInterface.condcutores();
+            call.enqueue(new Callback<ConductorPDO>() {
+                @Override
+                public void onResponse(Call<ConductorPDO> call, Response<ConductorPDO> response) {
+                    if(response.isSuccessful()){
+                        //response.body().
+                        String var = "";
+                        List<ConductorRegistro> conductores = response.body().getConductorResponse().getListaCondcutor();
+                        if(conductores != null) {
+                            for (ConductorRegistro conductor : conductores) {
+                                //Toast.makeText(getApplicationContext(), conductor.getNombre(), Toast.LENGTH_LONG).show();
+                                var += conductor.getNombre();
+                            }
+                                //saveDataConductor(conductor.getNombre(), conductor.getFoto(), conductor.getIdUsuario());
+                        }
+                        else
+                            Toast.makeText(getApplicationContext(), "No hay registros", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),var,Toast.LENGTH_LONG).show();
+                    }else{
+                        System.out.println("No fue successful");
+                    }
+                }
 
+                @Override
+                public void onFailure(Call<ConductorPDO> call, Throwable t) {
+                    System.out.println("Error al recibir lista de conductores");
+                }
+            });
+            /*
             for(int i=1; i<=100; i++) {
                 System.out.println("Esto es el servicio" + i);
                 try {
@@ -98,7 +135,7 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
                 bundle.putDouble("doblesito",2.0);
                 intent.putExtras(bundle);
                 LocalBroadcastManager.getInstance(ServiceAlarmas.this).sendBroadcast(intent);*/
-            }
+            //}
         }
     }
 
