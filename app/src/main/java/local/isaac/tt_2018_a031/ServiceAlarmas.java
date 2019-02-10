@@ -60,13 +60,14 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
 
     @Override
     public void onCreate() {
-        hilo = new MiThread();
+
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flag, int idProcess){
         super.onStartCommand(intent,flag,idProcess);
+        hilo = new MiThread();
         hilo.start();
         return START_STICKY;
     }
@@ -128,6 +129,7 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
 
 
                                 notificationManager.notify(1,mbuilder.build());
+                                //stopService(new Intent(getApplicationContext(),ServiceAlarmas.class));
                             }
                             else
                                 Toast.makeText(getApplicationContext(), "No hay registros", Toast.LENGTH_LONG).show();
