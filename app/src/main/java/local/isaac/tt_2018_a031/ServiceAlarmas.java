@@ -1,13 +1,19 @@
 package local.isaac.tt_2018_a031;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -16,6 +22,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -42,13 +49,10 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
 
 
     private MiThread hilo;
-    private Maps mMapFragment;
-    private AlertaViewModel alertaViewModel;
-    public static final String preferencias = "MyPrefs" ;
-    SharedPreferences sharedpreferences;
     private APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
 
-
+    private NotificationCompat.Builder mbuilder;
+    PendingIntent pendingIntent;
 
 
     public ServiceAlarmas(){
@@ -57,14 +61,12 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
     @Override
     public void onCreate() {
         hilo = new MiThread();
-        //alertaViewModel = ViewModelProviders.of(this).get(AlertaViewModel.class);
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flag, int idProcess){
         super.onStartCommand(intent,flag,idProcess);
-        alertaViewModel = intent.getParcelableExtra("AlertViewModel");
         hilo.start();
         return START_STICKY;
     }
@@ -88,45 +90,60 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
         @Override
         public void run() {
 
-            //alertaViewModel.setAlertaResponse(null);
-           /* alertaViewModel.getAlertaResponse().observe((LifecycleOwner)getApplication(),(AlertaPDO alertaResponse) -> {
-                procesarRespuestaAlerta(alertaResponse);
-            });*/
-
-            //ConductorPDO conductorPDO = new ConductorPDO();
-            Call<ConductorPDO> call = apiInterface.condcutores();
-            call.enqueue(new Callback<ConductorPDO>() {
-                @Override
-                public void onResponse(Call<ConductorPDO> call, Response<ConductorPDO> response) {
-                    if(response.isSuccessful()){
-                        //response.body().
-                        String var = "";
-                        List<ConductorRegistro> conductores = response.body().getConductorResponse().getListaCondcutor();
-                        if(conductores != null) {
-                            for (ConductorRegistro conductor : conductores) {
-                                //Toast.makeText(getApplicationContext(), conductor.getNombre(), Toast.LENGTH_LONG).show();
-                                var += conductor.getNombre();
-                            }
-                                //saveDataConductor(conductor.getNombre(), conductor.getFoto(), conductor.getIdUsuario());
-                        }
-                        else
-                            Toast.makeText(getApplicationContext(), "No hay registros", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getApplicationContext(),var,Toast.LENGTH_LONG).show();
-                    }else{
-                        System.out.println("No fue successful");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ConductorPDO> call, Throwable t) {
-                    System.out.println("Error al recibir lista de conductores");
-                }
-            });
-            /*
             for(int i=1; i<=100; i++) {
                 System.out.println("Esto es el servicio" + i);
+                Call<AlertaPDO> call = apiInterface.alertas();
+                call.enqueue(new Callback<AlertaPDO>() {
+                    @Override
+                    public void onResponse(Call<AlertaPDO> call, Response<AlertaPDO> response) {
+                        if(response.isSuccessful()){
+                            String var = "";
+                            List<AlertaRegistro> alertas = response.body().getAlertaResponse().getListaAlerta();
+                            if(alertas != null) {
+                                Intent intentAction = new Intent(getApplicationContext(),Maps.class);
+                                intentAction.putExtra("action","actionName");
+
+                                pendingIntent = PendingIntent.getActivity(getApplicationContext(),1,intentAction,PendingIntent.FLAG_ONE_SHOT);
+                                //pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                                NotificationManager notificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+                                mbuilder = new NotificationCompat.Builder(getApplicationContext(),null);
+                                if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+                                    int importancia = NotificationManager.IMPORTANCE_MAX;
+                                    CharSequence nombre = "Ofertas";
+                                    @SuppressLint("WrongConstant") NotificationChannel mChannel =  new NotificationChannel("canal1",nombre,importancia);
+
+                                    mChannel.setDescription("esta es una prueba");
+                                    mChannel.enableVibration(true);
+
+                                    notificationManager.createNotificationChannel(mChannel);
+
+                                    mbuilder = new NotificationCompat.Builder(getApplicationContext(), "canal1");
+                                }
+                                mbuilder.setSmallIcon(R.drawable.ic_logoeki).setContentTitle("Jairo").setContentText("Alan")
+                                        .setColor(getApplicationContext().getResources().getColor(R.color.colorAccent))
+                                        .setContentIntent(pendingIntent)
+                                        .setAutoCancel(true)
+                                        .setPriority(Notification.PRIORITY_MAX);
+
+
+                                notificationManager.notify(1,mbuilder.build());
+                            }
+                            else
+                                Toast.makeText(getApplicationContext(), "No hay registros", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(),var,Toast.LENGTH_LONG).show();
+                        }else{
+                            System.out.println("No fue successful");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AlertaPDO> call, Throwable t) {
+                        System.out.println("Error al recibir lista de conductores");
+                    }
+                });
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -135,49 +152,8 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
                 bundle.putDouble("doblesito",2.0);
                 intent.putExtras(bundle);
                 LocalBroadcastManager.getInstance(ServiceAlarmas.this).sendBroadcast(intent);*/
-            //}
-        }
-    }
-
-
-    public void procesarRespuestaAlerta(AlertaPDO alertaResponse){
-        if(alertaResponse.getAlertaResponse() != null){
-            List<AlertaRegistro> alertas = alertaResponse.getAlertaResponse().getListaAlerta();
-
-            if(alertas != null) {
-                for (AlertaRegistro alerta : alertas)
-                    saveDataAlerta(alerta.getFecha(), alerta.getLatitud(), alerta.getLongitud(), alerta.getTipo_alerta());
             }
-            else
-                Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast httpError = Toast.makeText(this, "Fallo al recibir Alertaes", Toast.LENGTH_SHORT);
-            httpError.show();
-            alertaViewModel.setAlertaResponse(null);
         }
     }
 
-    public void saveDataAlerta(String fecha,String latitud, String longitud, String tipo){
-
-
-        Toast.makeText(this,"prueba",Toast.LENGTH_LONG);
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        /*SharedPreferences.Editor editor = sharedpreferences.edit();
-
-        editor.putString("nombre", nombre);
-        editor.putString("foto",foto);
-        editor.putString("id",id);
-        editor.putBoolean("activity_executed", true);
-        editor.commit();
-        titulos.add(nombre);
-        imagen.add(foto);
-        ids.add(id);*/
-
-    }
 }

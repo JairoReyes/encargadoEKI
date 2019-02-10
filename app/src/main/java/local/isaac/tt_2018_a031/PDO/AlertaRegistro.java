@@ -16,14 +16,38 @@ public class AlertaRegistro {
     @SerializedName("fecha")
     private String fecha;
 
+    @SerializedName("estado")
+    private String estado;
+
+    @SerializedName("id_alerta")
+    private String id_alerta;
+
     public AlertaRegistro(){
     }
 
-    public AlertaRegistro(String tipo_alerta, String latitud, String longitud, String fecha){
+    public AlertaRegistro(String tipo_alerta, String latitud, String longitud, String fecha, String estado, String id_alerta){
         this.tipo_alerta = tipo_alerta;
         this.latitud = latitud;
         this.longitud = longitud;
         this.fecha = fecha;
+        this.estado = estado;
+        this.id_alerta = id_alerta;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getId_alerta() {
+        return id_alerta;
+    }
+
+    public void setId_alerta(String id_alerta) {
+        this.id_alerta = id_alerta;
     }
 
     public String getTipo_alerta() {
