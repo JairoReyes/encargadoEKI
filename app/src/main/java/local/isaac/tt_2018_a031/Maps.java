@@ -3,6 +3,8 @@ package local.isaac.tt_2018_a031;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Service;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,17 +44,26 @@ import com.mindorks.placeholderview.PlaceHolderView;
 import java.util.ArrayList;
 import java.util.List;
 
+import local.isaac.tt_2018_a031.PDO.AlertaPDO;
+import local.isaac.tt_2018_a031.PDO.AlertaRegistro;
 import local.isaac.tt_2018_a031.controller.DrawerHeader;
 import local.isaac.tt_2018_a031.controller.DrawerMenuItem;
 import local.isaac.tt_2018_a031.controller.ParadasCercanasAdapter;
 import local.isaac.tt_2018_a031.model.Parada;
 import local.isaac.tt_2018_a031.repository.ParadaRepository;
+import local.isaac.tt_2018_a031.viewmodel.AlertaViewModel;
 
 public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
-
+    private volatile boolean exit = true;
     private GoogleMap mMap;
     ParadaRepository paradaRepository= new ParadaRepository(this);
+    private MiThread2 hilo = new MiThread2();
+    private AlertaViewModel alertaViewModel;
+    ArrayList<String> latitudes = new ArrayList<String>();
+    ArrayList<String> longitudes = new ArrayList<String>();
+    public static final String preferencias = "MyPrefs" ;
+    SharedPreferences sharedpreferences;
 
     private PlaceHolderView mDrawerView;
     private DrawerLayout mDrawer;
@@ -68,15 +79,15 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal_eki);
-
-        startService(new Intent(this,ServiceAlarmas.class));
+        //startService(new Intent(this,ServiceAlarmas.class));
         startService(new Intent(this,LocationService.class));
 
-
+        sharedpreferences = getSharedPreferences(preferencias, Context.MODE_PRIVATE);
 
 
         mDrawer = (DrawerLayout)findViewById(R.id.drawerLayout);
         mDrawerView = (PlaceHolderView)findViewById(R.id.drawerView);
+        alertaViewModel = ViewModelProviders.of(this).get(AlertaViewModel.class);
         //recyclerParadasCercanas = (RecyclerView) findViewById(R.id.recyclerview_paradas);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -93,6 +104,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     }
     @Override
     public void onBackPressed() {
+        //startService(new Intent(this,ServiceAlarmas.class));
         moveTaskToBack(true);
     }
 
@@ -154,6 +166,11 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+
+        //hilo = new MiThread2();
+        if(hilo.getState() == Thread.State.NEW)
+            hilo.start();
         /*
         try {
             miUbicacion();
@@ -320,4 +337,99 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 */
+
+    public void onPause(){
+        super.onPause();
+        exit = false;
+        startService(new Intent(Maps.this,ServiceAlarmas.class));
+    }
+
+    public void onStop(){
+        super.onStop();
+        exit = false;
+        //if(hilo.isAlive())
+        //if(hilo != null)
+            //hilo.interrupt();
+        //startService(new Intent(this,ServiceAlarmas.class));
+    }
+
+    public void onDestroy(){
+        //if(hilo.isAlive())
+        exit = false;
+        //startService(new Intent(this,ServiceAlarmas.class));
+    }
+
+
+    public void onResume(){
+        super.onResume();
+        exit = true;
+        if(hilo.isAlive()){
+            hilo.interrupt();
+        }
+        hilo = new MiThread2();
+        hilo.start();
+        stopService(new Intent(Maps.this,ServiceAlarmas.class));
+    }
+    class MiThread2 extends Thread {
+        @Override
+        public void run() {
+
+            //stopService(new Intent(Maps.this,ServiceAlarmas.class));
+            while(exit) {
+
+                alertaViewModel.setAlertaResponse(null);
+                alertaViewModel.getAlertaResponse().observe(Maps.this, (AlertaPDO alertaResponse) -> {
+                    procesarRespuestaAlerta(alertaResponse);
+                });
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+    }
+
+    public void procesarRespuestaAlerta(AlertaPDO alertaResponse){
+        if(alertaResponse.getAlertaResponse() != null){
+            List<AlertaRegistro> alertas = alertaResponse.getAlertaResponse().getListaAlerta();
+
+            if(alertas != null) {
+                for (AlertaRegistro alerta : alertas){
+                    saveDataAlertas(alerta.getLatitud(),alerta.getLongitud());
+                    //Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("ic_logoeki", "drawable", getPackageName()));
+                    //Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
+                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.pruebita);
+                    LatLng coordenada = new LatLng(Double.parseDouble(alerta.getLatitud()),Double.parseDouble(alerta.getLongitud()));
+                    mMap.addMarker(new MarkerOptions().position(coordenada).title(alerta.getTipo_alerta()).icon(BitmapDescriptorFactory.fromBitmap(icon)));
+
+                }
+            }
+            else
+                Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast httpError = Toast.makeText(this, "Fallo al recibir conductores", Toast.LENGTH_SHORT);
+            httpError.show();
+            alertaViewModel.setAlertaResponse(null);
+        }
+    }
+
+    public void saveDataAlertas(String latitud,String longitud){
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+
+        editor.putString("latitud", latitud);
+        editor.putString("longitud",longitud);
+        editor.putBoolean("activity_executed", true);
+        editor.commit();
+        latitudes.add(latitud);
+        longitudes.add(longitud);
+
+
+    }
+
+
 }

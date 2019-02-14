@@ -50,6 +50,8 @@ public class Registros extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registros);
+
+        //startService(new Intent(this,ServiceAlarmas.class));
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         sharedpreferences = getSharedPreferences(preferencias, Context.MODE_PRIVATE);
         conductorViewModel = ViewModelProviders.of(this).get(ConductorViewModel.class);
@@ -111,11 +113,13 @@ public class Registros extends AppCompatActivity {
                 TextView nombre = (TextView) view.findViewById(R.id.list_row_id);
 
                 if(bandera == 1) {
+                    //stopService(new Intent(Registros.this,ServiceAlarmas.class));
                     Intent intent = new Intent(Registros.this, Registro_Individual_Conductor.class);
                     intent.putExtra("id", nombre.getText().toString());
                     startActivityForResult(intent, 0);
                 }
                 else if (bandera == 0){
+                    //stopService(new Intent(Registros.this,ServiceAlarmas.class));
                     Intent intent = new Intent(Registros.this, Registro_Individual_Trolebus.class);
                     intent.putExtra("id", nombre.getText().toString());
                     startActivityForResult(intent, 0);
@@ -208,4 +212,5 @@ public class Registros extends AppCompatActivity {
         titulos.add(placa);
         ids.add(id);
     }
+
 }

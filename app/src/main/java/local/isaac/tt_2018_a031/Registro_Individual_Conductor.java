@@ -3,6 +3,7 @@ package local.isaac.tt_2018_a031;
 import android.app.DatePickerDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -70,6 +71,7 @@ public class Registro_Individual_Conductor extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro_individual_conductor);
 
+        //startService(new Intent(this,ServiceAlarmas.class));
 
         sharedpreferences = getSharedPreferences(preferencias, Context.MODE_PRIVATE);
 
@@ -314,4 +316,5 @@ public class Registro_Individual_Conductor extends AppCompatActivity implements 
         tiempo.add(tiempos);
         calificacion.add(califs);
     }
+
 }

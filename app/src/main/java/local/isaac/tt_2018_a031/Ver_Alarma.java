@@ -25,7 +25,7 @@ public class Ver_Alarma extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver__alarma);
-
+        //startService(new Intent(this,ServiceAlarmas.class));
 
         TextView mensaje_principal = (TextView) findViewById(R.id.mensaje_principal);
         TextView unidad = (TextView) findViewById(R.id.unidad);
@@ -48,7 +48,7 @@ public class Ver_Alarma extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
+                //stopService(new Intent(Ver_Alarma.this,ServiceAlarmas.class));
                 Intent intentAction = new Intent(Ver_Alarma.this,Maps.class);
 
 //This is optional if you have more than one buttons and want to differentiate between two
@@ -86,4 +86,5 @@ public class Ver_Alarma extends AppCompatActivity {
             }
         });
     }
+
 }

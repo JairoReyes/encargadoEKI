@@ -49,6 +49,7 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
 
 
     private MiThread hilo;
+    private volatile boolean exit = true;
     private APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
 
     private NotificationCompat.Builder mbuilder;
@@ -60,7 +61,6 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
 
     @Override
     public void onCreate() {
-
     }
 
 
@@ -72,7 +72,9 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
         return START_STICKY;
     }
 
+    @Override
     public void onDestroy(){
+        exit = false;
         super.onDestroy();
     }
 
@@ -91,8 +93,9 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
         @Override
         public void run() {
 
-            for(int i=1; i<=100; i++) {
-                System.out.println("Esto es el servicio" + i);
+            while(exit) {
+
+                //System.out.println("Esto es el servicio" + i);
                 Call<AlertaPDO> call = apiInterface.alertas();
                 call.enqueue(new Callback<AlertaPDO>() {
                     @Override
@@ -141,14 +144,15 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
 
                     @Override
                     public void onFailure(Call<AlertaPDO> call, Throwable t) {
-                        System.out.println("Error al recibir lista de conductores");
+                        System.out.println("Error al recibir lista de alertas");
                     }
                 });
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                //System.out.println("Este es el servicio :3");
                 /*Intent intent = new Intent("enviar");
                 Bundle bundle = new Bundle();
                 bundle.putDouble("doblesito",2.0);

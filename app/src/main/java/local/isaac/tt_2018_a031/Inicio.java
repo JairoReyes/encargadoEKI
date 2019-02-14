@@ -126,6 +126,7 @@ public class Inicio extends AppCompatActivity {
 
 
         //startService(new Intent(this,ServiceAlarmas.class));
+        //startService(new Intent(this,ServiceAlarmas.class));
         Intent intent = new Intent(this, Maps.class);
         startActivity(intent);
         finish();
