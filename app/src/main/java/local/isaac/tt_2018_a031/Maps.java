@@ -42,7 +42,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import local.isaac.tt_2018_a031.PDO.AlertaPDO;
 import local.isaac.tt_2018_a031.PDO.AlertaRegistro;
@@ -56,6 +58,7 @@ import local.isaac.tt_2018_a031.viewmodel.AlertaViewModel;
 public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
     private volatile boolean exit = true;
+    private HashMap<Marker, Integer> markers = new HashMap<Marker, Integer>();
     private GoogleMap mMap;
     ParadaRepository paradaRepository= new ParadaRepository(this);
     private MiThread2 hilo = new MiThread2();
@@ -64,6 +67,10 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     ArrayList<String> longitudes = new ArrayList<String>();
     public static final String preferencias = "MyPrefs" ;
     SharedPreferences sharedpreferences;
+    private int indice=0;
+    private int contadorMarkers = 0;
+
+
 
     private PlaceHolderView mDrawerView;
     private DrawerLayout mDrawer;
@@ -197,29 +204,30 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
 
 
+
+
         LatLng coordenada = new LatLng(19.501391, -99.142640);
 
 
-        ///prueba de ICONO DE ALERTA
-        GoogleMap alerta = googleMap;
 
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("descarga", "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
 
-        alerta.addMarker(new MarkerOptions().position(coordenada).title("Alarma de prueba").icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap)));
-        alerta.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        Marker m= mMap.addMarker(new MarkerOptions().position(coordenada).title("Alarma de prueba").icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap)));
+        markers.put(m,0);
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Toast.makeText(getApplicationContext(), "marcador", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Maps.this, Ver_Alarma.class);
+                if(markers.get(marker) != null) {
+                    //Toast.makeText(getApplicationContext(), "Id del marcador: " + markers.get(marker), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Maps.this, Ver_Alarma.class);
 
-                //intent.putExtra("nombre",nombre.getText().toString());
-                startActivityForResult(intent, 0);
+                    //intent.putExtra("nombre",nombre.getText().toString());
+                    startActivityForResult(intent, 0);
+                }
                 return false;
             }
         });
-
-
 
         //googleMap.addMarker(new MarkerOptions() .icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap)));
         CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(coordenada, 15);
@@ -395,23 +403,46 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     public void procesarRespuestaAlerta(AlertaPDO alertaResponse){
         if(alertaResponse.getAlertaResponse() != null){
             List<AlertaRegistro> alertas = alertaResponse.getAlertaResponse().getListaAlerta();
-
             if(alertas != null) {
                 for (AlertaRegistro alerta : alertas){
-                    saveDataAlertas(alerta.getLatitud(),alerta.getLongitud());
-                    //Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("ic_logoeki", "drawable", getPackageName()));
-                    //Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
-                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.pruebita);
-                    LatLng coordenada = new LatLng(Double.parseDouble(alerta.getLatitud()),Double.parseDouble(alerta.getLongitud()));
-                    mMap.addMarker(new MarkerOptions().position(coordenada).title(alerta.getTipo_alerta()).icon(BitmapDescriptorFactory.fromBitmap(icon)));
-
+                    if(!latitudes.isEmpty()) {
+                        if (latitudes.contains(alerta.getLatitud())) {
+                            indice = latitudes.indexOf(alerta.getLatitud());
+                            if (longitudes.get(indice) != alerta.getLongitud()) {
+                                saveDataAlertas(alerta.getLatitud(), alerta.getLongitud());
+                                //Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("ic_logoeki", "drawable", getPackageName()));
+                                //Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
+                                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.pruebita);
+                                LatLng coordenada = new LatLng(Double.parseDouble(alerta.getLatitud()), Double.parseDouble(alerta.getLongitud()));
+                                Marker marker = mMap.addMarker(new MarkerOptions().position(coordenada).title(alerta.getTipo_alerta()).icon(BitmapDescriptorFactory.fromBitmap(icon)));
+                                markers.put(marker, contadorMarkers);
+                                contadorMarkers++;
+                            }
+                            else {
+                                Toast.makeText(Maps.this,"Ese marcador ya existe",Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            saveDataAlertas(alerta.getLatitud(), alerta.getLongitud());
+                            //Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("ic_logoeki", "drawable", getPackageName()));
+                            //Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
+                            Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.pruebita);
+                            LatLng coordenada = new LatLng(Double.parseDouble(alerta.getLatitud()), Double.parseDouble(alerta.getLongitud()));
+                            Marker marker = mMap.addMarker(new MarkerOptions().position(coordenada).title(alerta.getTipo_alerta()).icon(BitmapDescriptorFactory.fromBitmap(icon)));
+                            markers.put(marker, contadorMarkers);
+                            contadorMarkers++;
+                        }
+                    }
                 }
             }
-            else
+            else {
+                contadorMarkers = 0;
                 Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
+                latitudes.clear();
+                longitudes.clear();
+            }
         }
         else{
-            Toast httpError = Toast.makeText(this, "Fallo al recibir conductores", Toast.LENGTH_SHORT);
+            Toast httpError = Toast.makeText(this, "Fallo al recibir alertas", Toast.LENGTH_SHORT);
             httpError.show();
             alertaViewModel.setAlertaResponse(null);
         }

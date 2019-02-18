@@ -18,6 +18,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     ArrayList<String> titulos;
     ArrayList<String> imagenes;
     ArrayList<String> ids;
+    ArrayList<String> modelos;
     LayoutInflater inflater;
     //private List<Movie> moviesList;
 
@@ -46,10 +47,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         this.ids = ids;
     }
 
-    public RecyclerAdapter(Context context, ArrayList<String> titulos, ArrayList<String> ids) {
+    public RecyclerAdapter(Context context, ArrayList<String> titulos, ArrayList<String> ids, ArrayList<String> modelos,int var) {
         this.context = context;
         this.titulos = titulos;
         this.ids = ids;
+        this.modelos = modelos;
     }
 
     @Override
@@ -66,8 +68,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         holder.title.setText(titulos.get(position));
         holder.ids.setText(ids.get(position));
         //holder.genre.setText(movie.getGenre());
-        if(imagenes == null)
-            Picasso.get().load(R.drawable.descarga).into(holder.image);
+        if(imagenes == null){
+            //Picasso.get().load(R.drawable.descarga).into(holder.image);
+            if(modelos.get(position).equals("Serie 9000"))
+                Picasso.get().load(R.drawable.trole2).into(holder.image);
+            else
+                Picasso.get().load(R.drawable.trole1).into(holder.image);
+        }
+
         else
             Picasso.get().load(imagenes.get(position)).into(holder.image);
     }

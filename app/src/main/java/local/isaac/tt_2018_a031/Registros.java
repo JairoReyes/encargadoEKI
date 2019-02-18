@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,6 +39,7 @@ public class Registros extends AppCompatActivity {
     private RecyclerView recyclerView;
     ArrayList<String> titulos = new ArrayList<String>();
     ArrayList<String> imagen = new ArrayList<String>();
+    ArrayList<String> modelos = new ArrayList<String>();
     ArrayList<String> ids = new ArrayList<String>();
     private RecyclerAdapter rAdapter;
     private int bandera= 0;
@@ -70,8 +72,8 @@ public class Registros extends AppCompatActivity {
 
 
 
-
-        ArrayAdapter adp = new ArrayAdapter(this,android.R.layout.simple_spinner_item,elementos);
+        //ArrayAdapter adp = new ArrayAdapter(this,android.R.layout.simple_spinner_item,elementos);
+        ArrayAdapter adp = new ArrayAdapter(this,R.layout.spinner_row,elementos);
         mSpinner.setAdapter(adp);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -148,10 +150,16 @@ public class Registros extends AppCompatActivity {
                 Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
 
             rAdapter = new RecyclerAdapter(Registros.this,titulos,imagen,ids);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-            recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
-            recyclerView.setLayoutManager(mLayoutManager);
+            StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            //LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            //layoutManager.scrollToPosition(0);
+            //RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+            //recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setLayoutManager(gridLayoutManager);
+            //recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
+            //recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
+            //recyclerView.setItemAnimator(new SlideInUpAnimator());
             recyclerView.setAdapter(rAdapter);
         }
         else{
@@ -167,15 +175,17 @@ public class Registros extends AppCompatActivity {
 
             if(trolebuses != null) {
                 for (TrolebusRegistro trolebus : trolebuses)
-                    saveDataTrolebus(trolebus.getPlaca(), trolebus.getIdtrolebus());
+                    saveDataTrolebus(trolebus.getPlaca(), trolebus.getIdtrolebus(),trolebus.getModelo());
             }
             else
                 Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
 
-            rAdapter = new RecyclerAdapter(Registros.this,titulos,ids);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-            recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
-            recyclerView.setLayoutManager(mLayoutManager);
+            rAdapter = new RecyclerAdapter(Registros.this,titulos,ids,modelos,0);
+            StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            //RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+            //recyclerView.addItemDecoration(new DividerItemDecoration(Registros.this, LinearLayoutManager.VERTICAL));
+            //recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(rAdapter);
         }
@@ -202,7 +212,7 @@ public class Registros extends AppCompatActivity {
 
     }
 
-    public void saveDataTrolebus(String placa,String id){
+    public void saveDataTrolebus(String placa,String id,String modelo){
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
         editor.putString("id_trolebus",id);
@@ -210,6 +220,7 @@ public class Registros extends AppCompatActivity {
         editor.putBoolean("activity_executed",true);
         editor.commit();
         titulos.add(placa);
+        modelos.add(modelo);
         ids.add(id);
     }
 
