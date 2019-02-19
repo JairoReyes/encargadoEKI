@@ -7,6 +7,8 @@ import local.isaac.tt_2018_a031.PDO.ConductorPDO;
 import local.isaac.tt_2018_a031.PDO.Error;
 import local.isaac.tt_2018_a031.PDO.LoginPDO;
 import local.isaac.tt_2018_a031.PDO.LoginRequest;
+import local.isaac.tt_2018_a031.PDO.QuitarAlertaPDO;
+import local.isaac.tt_2018_a031.PDO.QuitarAlertaRequest;
 import local.isaac.tt_2018_a031.PDO.RegistroConductorPDO;
 import local.isaac.tt_2018_a031.PDO.RegistroConductorRequest;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusPDO;
@@ -209,6 +211,46 @@ public class RepositoryRetrofit {
         });
 
         return alertaResponse;
+    }
+
+
+    ////CAMBIAR LA ALERTA DE ESTADO
+    public MutableLiveData<QuitarAlertaPDO> getQuitarAlertaRequest(String estado, String id_alerta){
+
+        final MutableLiveData<QuitarAlertaPDO> quitarAlertaResponse = new MutableLiveData<>();
+
+        QuitarAlertaRequest quitarAlertaRequest = new QuitarAlertaRequest();
+        quitarAlertaRequest.setEstado(estado);
+        quitarAlertaRequest.setId_alerta(id_alerta);
+
+        Call<QuitarAlertaPDO> call = apiInterface.quitarAlerta(quitarAlertaRequest);
+        call.enqueue(new Callback<QuitarAlertaPDO>() {
+            @Override
+            public void onResponse(Call<QuitarAlertaPDO> call, Response<QuitarAlertaPDO> response) {
+                if(response.isSuccessful()){
+                    quitarAlertaResponse.postValue(response.body());
+                }else{
+                    Error httpError = new Error();
+                    httpError.setText(response.code() + ": " + response.message());
+                    QuitarAlertaPDO loginPDOHttpError = new QuitarAlertaPDO();
+                    loginPDOHttpError.setError(httpError);
+                    quitarAlertaResponse.postValue(loginPDOHttpError);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QuitarAlertaPDO> call, Throwable t) {
+                //Errores tales como TimeOut, se le indica al usuario que vuelva a insertar sus datos y lo vuelva a intentar
+                Error networkError = new Error();
+                networkError.setText("Fallo en la conexión, vuelva a intentarlo.");
+                QuitarAlertaPDO quitarAlertaPDONetworkError = new QuitarAlertaPDO();
+                quitarAlertaPDONetworkError.setError(networkError);
+                quitarAlertaResponse.postValue(quitarAlertaPDONetworkError);
+            }
+        });
+
+        return quitarAlertaResponse;
+
     }
 }
 

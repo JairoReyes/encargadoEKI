@@ -4,6 +4,8 @@ import local.isaac.tt_2018_a031.PDO.AlertaPDO;
 import local.isaac.tt_2018_a031.PDO.ConductorPDO;
 import local.isaac.tt_2018_a031.PDO.LoginPDO;
 import local.isaac.tt_2018_a031.PDO.LoginRequest;
+import local.isaac.tt_2018_a031.PDO.QuitarAlertaPDO;
+import local.isaac.tt_2018_a031.PDO.QuitarAlertaRequest;
 import local.isaac.tt_2018_a031.PDO.RegistroConductorPDO;
 import local.isaac.tt_2018_a031.PDO.RegistroConductorRequest;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusPDO;
@@ -13,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface APIInterface {
 
@@ -33,5 +36,8 @@ public interface APIInterface {
 
     @GET("alertas")
     Call<AlertaPDO> alertas();
+
+    @PUT("estadoAlerta")
+    Call<QuitarAlertaPDO> quitarAlerta(@Body QuitarAlertaRequest quitarAlertaRequest);
 
 }

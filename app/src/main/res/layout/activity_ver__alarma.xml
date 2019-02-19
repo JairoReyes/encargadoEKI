@@ -32,6 +32,13 @@
         android:textSize="20dp" />
 
     <TextView
+        android:id="@+id/placa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="20dp" />
+
+    <TextView
         android:id="@+id/conductor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

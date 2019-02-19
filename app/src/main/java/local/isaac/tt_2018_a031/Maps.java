@@ -232,15 +232,32 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
             public boolean onMarkerClick(Marker marker) {
                 if(markers.get(marker) != null) {
 
+
+
                     //Toast.makeText(getApplicationContext(), "Id del marcador: " + markers.get(marker), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Maps.this, Ver_Alarma.class);
 
                     intent.putExtra("fecha",fechas.get(markers.get(marker)));
+                    intent.putExtra("placas",placas.get(markers.get(marker)));
                     intent.putExtra("id_alerta",id_alertas.get(markers.get(marker)));
                     intent.putExtra("tipo_alerta",tipos_alertas.get(markers.get(marker)));
                     intent.putExtra("id_trolebus",id_trolebuses.get(markers.get(marker)));
                     intent.putExtra("nombre",nombres.get(markers.get(marker)));
+
+                    fechas.remove(markers.get(marker));
+                    placas.remove(markers.get(marker));
+                    id_alertas.remove(markers.get(marker));
+                    tipos_alertas.remove(markers.get(marker));
+                    id_trolebuses.remove(markers.get(marker));
+                    nombres.remove(markers.get(marker));
+                    latitudes.remove(markers.get(marker));
+                    longitudes.remove(markers.get(marker));
+
+                    markers.remove(marker);
+                    marker.remove();
                     startActivityForResult(intent, 0);
+
+
                 }
                 return false;
             }
