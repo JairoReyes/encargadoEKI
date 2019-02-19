@@ -95,7 +95,7 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
 
             while(exit) {
 
-                //System.out.println("Esto es el servicio" + i);
+                //System.out.println("Esto es el servicio");
                 Call<AlertaPDO> call = apiInterface.alertas();
                 call.enqueue(new Callback<AlertaPDO>() {
                     @Override

@@ -16,30 +16,30 @@ public class AlertaRegistro {
     @SerializedName("fecha")
     private String fecha;
 
-    @SerializedName("estado")
-    private String estado;
-
     @SerializedName("id_alerta")
     private String id_alerta;
+
+    @SerializedName("id_trolebus")
+    private String id_trolebus;
+
+    @SerializedName("nombre")
+    private String nombre;
+
+    @SerializedName("placa")
+    private String placa;
 
     public AlertaRegistro(){
     }
 
-    public AlertaRegistro(String tipo_alerta, String latitud, String longitud, String fecha, String estado, String id_alerta){
+    public AlertaRegistro(String tipo_alerta, String latitud, String longitud, String fecha, String id_alerta, String id_trolebus,String nombre, String placa){
         this.tipo_alerta = tipo_alerta;
         this.latitud = latitud;
         this.longitud = longitud;
         this.fecha = fecha;
-        this.estado = estado;
         this.id_alerta = id_alerta;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
+        this.id_trolebus = id_trolebus;
+        this.nombre = nombre;
+        this.placa = placa;
     }
 
     public String getId_alerta() {
@@ -68,6 +68,30 @@ public class AlertaRegistro {
 
     public String getLongitud() {
         return longitud;
+    }
+
+    public String getId_trolebus() {
+        return id_trolebus;
+    }
+
+    public void setId_trolebus(String id_trolebus) {
+        this.id_trolebus = id_trolebus;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
     }
 
     public void setLongitud(String longitud) {

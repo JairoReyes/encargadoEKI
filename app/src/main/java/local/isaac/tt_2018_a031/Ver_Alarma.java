@@ -35,14 +35,28 @@ public class Ver_Alarma extends AppCompatActivity {
         Button boton = (Button) findViewById(R.id.button);
         ImageView imagen_alarma = (ImageView) findViewById(R.id.imagen_alarma);
 
-        imagen_alarma.setImageResource(R.drawable.descarga);
 
+
+
+        String nombre = getIntent().getExtras().getString("nombre");
+        String tipo_alerta = getIntent().getExtras().getString("tipo_alerta");
+        String id_trolebus = getIntent().getExtras().getString("id_trolebus");
+        String fechas = getIntent().getExtras().getString("fecha");
+        String id_alerta = getIntent().getExtras().getString("id_alerta");
         //en este caso puse boton fallo emergencia
-        mensaje_principal.setText(R.string.boton_fallo_eme);
-        unidad.setText("UNIDAD: ");
-        conductor.setText("CONDUCTOR: ");
-        fecha.setText("FECHA: ");
-        hora.setText("HORA: ");
+        if(tipo_alerta.equals("Emergencia"))
+            imagen_alarma.setImageResource(R.drawable.emergencia);
+        else if(tipo_alerta.equals("Panico"))
+            imagen_alarma.setImageResource(R.drawable.panico);
+        else if(tipo_alerta.equals("Vial"))
+            imagen_alarma.setImageResource(R.drawable.vial);
+        else
+            imagen_alarma.setImageResource(R.drawable.averia);
+        mensaje_principal.setText("El botón de " + tipo_alerta + " ha sido presionado con el id " + id_alerta);
+        unidad.setText("UNIDAD: " + id_trolebus);
+        conductor.setText("CONDUCTOR: " + nombre);
+        fecha.setText("FECHA: " + fechas.split(" ")[0]);
+        hora.setText("HORA: " + fechas.split(" ")[1]);
 
         boton.setOnClickListener(new View.OnClickListener() {
             @Override

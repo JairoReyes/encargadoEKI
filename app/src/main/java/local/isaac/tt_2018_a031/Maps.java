@@ -65,7 +65,18 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     private AlertaViewModel alertaViewModel;
     ArrayList<String> latitudes = new ArrayList<String>();
     ArrayList<String> longitudes = new ArrayList<String>();
+
+    ArrayList<String> tipos_alertas = new ArrayList<String>();
+    ArrayList<String> placas = new ArrayList<String>();
+    ArrayList<String> nombres = new ArrayList<String>();
+    ArrayList<String> id_trolebuses = new ArrayList<String>();
+    ArrayList<String> fechas = new ArrayList<String>();
+    ArrayList<String> id_alertas = new ArrayList<String>();
+    private Marker marker = null;
+    private Bitmap imageBitmap, resizedBitmap;
+
     public static final String preferencias = "MyPrefs" ;
+    private int activar=0;
     SharedPreferences sharedpreferences;
     private int indice=0;
     private int contadorMarkers = 0;
@@ -173,6 +184,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        activar=1;
 
 
         //hilo = new MiThread2();
@@ -219,10 +231,15 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if(markers.get(marker) != null) {
+
                     //Toast.makeText(getApplicationContext(), "Id del marcador: " + markers.get(marker), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Maps.this, Ver_Alarma.class);
 
-                    //intent.putExtra("nombre",nombre.getText().toString());
+                    intent.putExtra("fecha",fechas.get(markers.get(marker)));
+                    intent.putExtra("id_alerta",id_alertas.get(markers.get(marker)));
+                    intent.putExtra("tipo_alerta",tipos_alertas.get(markers.get(marker)));
+                    intent.putExtra("id_trolebus",id_trolebuses.get(markers.get(marker)));
+                    intent.putExtra("nombre",nombres.get(markers.get(marker)));
                     startActivityForResult(intent, 0);
                 }
                 return false;
@@ -371,11 +388,13 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     public void onResume(){
         super.onResume();
         exit = true;
-        if(hilo.isAlive()){
-            hilo.interrupt();
+        if(activar == 1) {
+            if (hilo.isAlive()) {
+                hilo.interrupt();
+            }
+            hilo = new MiThread2();
+            hilo.start();
         }
-        hilo = new MiThread2();
-        hilo.start();
         stopService(new Intent(Maps.this,ServiceAlarmas.class));
     }
     class MiThread2 extends Thread {
@@ -384,7 +403,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
             //stopService(new Intent(Maps.this,ServiceAlarmas.class));
             while(exit) {
-
+                //System.out.println("Esto es el hilo");
                 alertaViewModel.setAlertaResponse(null);
                 alertaViewModel.getAlertaResponse().observe(Maps.this, (AlertaPDO alertaResponse) -> {
                     procesarRespuestaAlerta(alertaResponse);
@@ -402,36 +421,38 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
     public void procesarRespuestaAlerta(AlertaPDO alertaResponse){
         if(alertaResponse.getAlertaResponse() != null){
+            //Marker marker;
             List<AlertaRegistro> alertas = alertaResponse.getAlertaResponse().getListaAlerta();
             if(alertas != null) {
                 for (AlertaRegistro alerta : alertas){
-                    if(!latitudes.isEmpty()) {
-                        if (latitudes.contains(alerta.getLatitud())) {
-                            indice = latitudes.indexOf(alerta.getLatitud());
-                            if (longitudes.get(indice) != alerta.getLongitud()) {
-                                saveDataAlertas(alerta.getLatitud(), alerta.getLongitud());
-                                //Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("ic_logoeki", "drawable", getPackageName()));
-                                //Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
-                                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.pruebita);
+
+                    //if(alerta.getTipo_alerta().equals("Emergencia"))
+                      //  icon = BitmapFactory.decodeResource(getResources(), R.drawable);
+
+                    //if(!latitudes.isEmpty()) {
+
+
+                        if (!id_alertas.contains(alerta.getId_alerta())) {
+                                saveDataAlertas(alerta.getLatitud(), alerta.getLongitud(),alerta.getTipo_alerta(),alerta.getNombre(),alerta.getPlaca(),alerta.getFecha(),alerta.getId_trolebus(),alerta.getId_alerta());
+
+                                if(alerta.getTipo_alerta().equals("Emergencia"))
+                                    imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("emergencia", "drawable", getPackageName()));
+                                else if(alerta.getTipo_alerta().equals("Panico"))
+                                    imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("panico", "drawable", getPackageName()));
+                                else if(alerta.getTipo_alerta().equals("Vial"))
+                                    imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("vial", "drawable", getPackageName()));
+                                else
+                                    imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("averia", "drawable", getPackageName()));
+
+                                resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
+
                                 LatLng coordenada = new LatLng(Double.parseDouble(alerta.getLatitud()), Double.parseDouble(alerta.getLongitud()));
-                                Marker marker = mMap.addMarker(new MarkerOptions().position(coordenada).title(alerta.getTipo_alerta()).icon(BitmapDescriptorFactory.fromBitmap(icon)));
+                                marker = mMap.addMarker(new MarkerOptions().position(coordenada).title(alerta.getTipo_alerta()).icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap)));
+                                //marker = mMap.addMarker(new MarkerOptions().position(coordenada).title(alerta.getTipo_alerta()).icon(BitmapDescriptorFactory.fromResource(R.drawable.emergencia)));
                                 markers.put(marker, contadorMarkers);
                                 contadorMarkers++;
-                            }
-                            else {
-                                Toast.makeText(Maps.this,"Ese marcador ya existe",Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            saveDataAlertas(alerta.getLatitud(), alerta.getLongitud());
-                            //Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("ic_logoeki", "drawable", getPackageName()));
-                            //Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
-                            Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.pruebita);
-                            LatLng coordenada = new LatLng(Double.parseDouble(alerta.getLatitud()), Double.parseDouble(alerta.getLongitud()));
-                            Marker marker = mMap.addMarker(new MarkerOptions().position(coordenada).title(alerta.getTipo_alerta()).icon(BitmapDescriptorFactory.fromBitmap(icon)));
-                            markers.put(marker, contadorMarkers);
-                            contadorMarkers++;
                         }
-                    }
+                    //}
                 }
             }
             else {
@@ -439,6 +460,12 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
                 Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
                 latitudes.clear();
                 longitudes.clear();
+                id_trolebuses.clear();
+                fechas.clear();
+                nombres.clear();
+                placas.clear();
+                tipos_alertas.clear();
+                id_alertas.clear();
             }
         }
         else{
@@ -448,7 +475,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    public void saveDataAlertas(String latitud,String longitud){
+    public void saveDataAlertas(String latitud,String longitud,String tipo_alerta, String nombre, String placa, String fecha,String id_trolebus,String id_alerta){
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
@@ -458,6 +485,12 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         editor.commit();
         latitudes.add(latitud);
         longitudes.add(longitud);
+        tipos_alertas.add(tipo_alerta);
+        nombres.add(nombre);
+        placas.add(placa);
+        fechas.add(fecha);
+        id_trolebuses.add(id_trolebus);
+        id_alertas.add(id_alerta);
 
 
     }
