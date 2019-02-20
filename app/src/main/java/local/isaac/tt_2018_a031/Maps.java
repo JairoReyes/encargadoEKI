@@ -60,7 +60,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     private volatile boolean exit = true;
     private HashMap<Marker, Integer> markers = new HashMap<Marker, Integer>();
     private GoogleMap mMap;
-    ParadaRepository paradaRepository= new ParadaRepository(this);
+    //ParadaRepository paradaRepository= new ParadaRepository(this);
     private MiThread2 hilo = new MiThread2();
     private AlertaViewModel alertaViewModel;
     ArrayList<String> latitudes = new ArrayList<String>();
@@ -202,14 +202,15 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         dibujarRuta();
         int a = 0;
 
+        /*
         final List<Parada> parad = paradaRepository.obtenerParadasPorIdParadas();
         for (Parada parada : parad){
             LatLng paradas = new LatLng(parada.getUbicacionLatitud(), parada.getUbicacionLongitud());
             mMap.addMarker(new MarkerOptions().position(paradas).title(parada.getNombre()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_parada)));
             /*distanciaEntreDosPuntos[a][0] = Double.valueOf(a + 1);
             distanciaEntreDosPuntos[a][1] = Math.pow(parada.getUbicacionLatitud() - lat, 2) + Math.pow(parada.getUbicacionLongitud() - lat, 2);
-            a++;*/
-        }
+            a++;
+        }*/
 
 
 
@@ -222,11 +223,11 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
 
 
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("descarga", "drawable", getPackageName()));
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
+        //Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("descarga", "drawable", getPackageName()));
+        //Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 80, 80, false);
 
-        Marker m= mMap.addMarker(new MarkerOptions().position(coordenada).title("Alarma de prueba").icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap)));
-        markers.put(m,0);
+        //Marker m= mMap.addMarker(new MarkerOptions().position(coordenada).title("Alarma de prueba").icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap)));
+        //markers.put(m,0);
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {

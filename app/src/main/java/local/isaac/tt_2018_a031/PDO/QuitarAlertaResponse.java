@@ -3,21 +3,21 @@ package local.isaac.tt_2018_a031.PDO;
 import com.google.gson.annotations.SerializedName;
 
 public class QuitarAlertaResponse {
-    @SerializedName("resoponse")
-    private String response;
+    @SerializedName("response")
+    private Boolean response;
 
     public QuitarAlertaResponse(){
     }
 
-    public QuitarAlertaResponse(String response){
+    public QuitarAlertaResponse(Boolean response){
         this.response = response;
     }
 
-    public String getResponse() {
+    public Boolean getResponse() {
         return response;
     }
 
-    public void setResponse(String response) {
+    public void setResponse(Boolean response) {
         this.response = response;
     }
 }
