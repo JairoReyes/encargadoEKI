@@ -32,6 +32,8 @@ public class Ver_Alarma extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver__alarma);
+
+        getWindow().getDecorView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
         //startService(new Intent(this,ServiceAlarmas.class));
         quitarAlertaViewModel = ViewModelProviders.of(this).get(QuitarAlertaViewModel.class);
         TextView mensaje_principal = (TextView) findViewById(R.id.mensaje_principal);
@@ -42,7 +44,6 @@ public class Ver_Alarma extends AppCompatActivity {
         TextView placa = (TextView) findViewById(R.id.placa);
         Button boton = (Button) findViewById(R.id.button);
         ImageView imagen_alarma = (ImageView) findViewById(R.id.imagen_alarma);
-
 
 
 
@@ -74,10 +75,12 @@ public class Ver_Alarma extends AppCompatActivity {
         quitarAlertaViewModel.getQuitarAlertaResponse("0", id_alerta).observe(this, (QuitarAlertaPDO quitarAlertaResponse) -> {
             procesarRespuesta(quitarAlertaResponse);
         });
+
+
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
+
                 //stopService(new Intent(Ver_Alarma.this,ServiceAlarmas.class));
                 Intent intentAction = new Intent(Ver_Alarma.this,Maps.class);
 
@@ -111,7 +114,7 @@ public class Ver_Alarma extends AppCompatActivity {
                 notificationManager.notify(idNotification,mbuilder.build());
 
 
-                */
+
                 finish();
             }
         });
