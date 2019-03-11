@@ -61,12 +61,25 @@
         android:layout_gravity="center"
         android:textSize="20dp" />
 
-    <Button
-        android:id="@+id/button"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/aceptar"
-        android:layout_gravity="center"
-        />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/aceptar"
+            android:layout_gravity="center"
+            />
+
+        <Button
+            android:id="@+id/atendida"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/atendida"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
 
 </LinearLayout>

@@ -98,4 +98,5 @@
     <string name="fecha_erronea2">La fecha inicial no puede ser mayor que la final. Verificar nuevamente la fecha inicial o final</string>
     <string name="apellido">Apellido:</string>
     <string name="nombre2">Nombre:</string>
+    <string name="atendida">Atendida</string>
 </resources>

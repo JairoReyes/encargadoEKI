@@ -43,6 +43,7 @@ public class Ver_Alarma extends AppCompatActivity {
         TextView hora = (TextView) findViewById(R.id.hora);
         TextView placa = (TextView) findViewById(R.id.placa);
         Button boton = (Button) findViewById(R.id.button);
+        Button atendida = (Button) findViewById(R.id.atendida);
         ImageView imagen_alarma = (ImageView) findViewById(R.id.imagen_alarma);
 
 
@@ -72,10 +73,20 @@ public class Ver_Alarma extends AppCompatActivity {
 
 
 
-        quitarAlertaViewModel.getQuitarAlertaResponse("0", id_alerta).observe(this, (QuitarAlertaPDO quitarAlertaResponse) -> {
-            procesarRespuesta(quitarAlertaResponse);
-        });
 
+
+        atendida.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Ver_Alarma.this, Maps.class);
+
+                quitarAlertaViewModel.getQuitarAlertaResponse("0", id_alerta).observe(Ver_Alarma.this, (QuitarAlertaPDO quitarAlertaResponse) -> {
+                    procesarRespuesta(quitarAlertaResponse);
+                });
+                startActivity(intent);
+                finish();
+            }
+        });
 
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,38 +94,7 @@ public class Ver_Alarma extends AppCompatActivity {
 
                 //stopService(new Intent(Ver_Alarma.this,ServiceAlarmas.class));
                 Intent intentAction = new Intent(Ver_Alarma.this,Maps.class);
-
-//This is optional if you have more than one buttons and want to differentiate between two
-                intentAction.putExtra("action","actionName");
-
-                pendingIntent = PendingIntent.getActivity(Ver_Alarma.this,1,intentAction,PendingIntent.FLAG_ONE_SHOT);
-                //pendingIntent = PendingIntent.getBroadcast(Ver_Alarma.this,1,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
-
-                NotificationManager notificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
-                mbuilder = new NotificationCompat.Builder(Ver_Alarma.this,null);
-                if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
-                    int importancia = NotificationManager.IMPORTANCE_MAX;
-                    CharSequence nombre = "Ofertas";
-                    @SuppressLint("WrongConstant") NotificationChannel mChannel =  new NotificationChannel("canal1",nombre,importancia);
-
-                    mChannel.setDescription("esta es una prueba");
-                    mChannel.enableVibration(true);
-
-                    notificationManager.createNotificationChannel(mChannel);
-
-                    mbuilder = new NotificationCompat.Builder(Ver_Alarma.this, "canal1");
-                }
-                mbuilder.setSmallIcon(R.drawable.ic_logoeki).setContentTitle("Jairo").setContentText("Alan")
-                        .setColor(Ver_Alarma.this.getResources().getColor(R.color.colorAccent))
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true)
-                        .setPriority(Notification.PRIORITY_MAX);
-
-
-                notificationManager.notify(idNotification,mbuilder.build());
-
-
-
+                startActivity(intentAction);
                 finish();
             }
         });
