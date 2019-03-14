@@ -14,6 +14,7 @@ import local.isaac.tt_2018_a031.PDO.RegistroConductorRequest;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusPDO;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusRequest;
 import local.isaac.tt_2018_a031.PDO.TrolebusPDO;
+import local.isaac.tt_2018_a031.PDO.UbicacionPDO;
 import local.isaac.tt_2018_a031.PDO.ZonasRojasPDO;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -217,6 +218,39 @@ public class RepositoryRetrofit {
         });
 
         return zonasRojasResponse;
+    }
+
+    public MutableLiveData<UbicacionPDO> getUbicacionRequest (){
+
+        final MutableLiveData<UbicacionPDO> ubicacionResponse = new MutableLiveData<>();
+
+        Call<UbicacionPDO> call = apiInterface.ubicacionPasajero();
+
+        call.enqueue(new Callback<UbicacionPDO>() {
+            @Override
+            public void onResponse(Call<UbicacionPDO> call, Response<UbicacionPDO> response) {
+                if(response.isSuccessful())
+                    ubicacionResponse.postValue(response.body());
+                else{
+                    Error httpError = new Error();
+                    httpError.setText(response.code() + ": " + response.message());
+                    UbicacionPDO ubicacionPDOhttpError = new UbicacionPDO();
+                    ubicacionPDOhttpError.setError(httpError);
+                    ubicacionResponse.postValue(ubicacionPDOhttpError);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UbicacionPDO> call, Throwable t) {
+                Error networkError = new Error();
+                networkError.setText("Fallo en la conexión, vualeva a intentarlo");
+                UbicacionPDO ubicacionPDONetworkError = new UbicacionPDO();
+                ubicacionPDONetworkError.setError(networkError);
+                ubicacionResponse.postValue(ubicacionPDONetworkError);
+            }
+        });
+
+        return ubicacionResponse;
     }
 
 

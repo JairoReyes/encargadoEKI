@@ -11,6 +11,7 @@ import local.isaac.tt_2018_a031.PDO.RegistroConductorRequest;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusPDO;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusRequest;
 import local.isaac.tt_2018_a031.PDO.TrolebusPDO;
+import local.isaac.tt_2018_a031.PDO.UbicacionPDO;
 import local.isaac.tt_2018_a031.PDO.ZonasRojasPDO;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -43,5 +44,8 @@ public interface APIInterface {
 
     @GET("zonasRojas")
     Call<ZonasRojasPDO> zonasRojas();
+
+    @GET("ubicacion")
+    Call<UbicacionPDO> ubicacionPasajero ();
 
 }

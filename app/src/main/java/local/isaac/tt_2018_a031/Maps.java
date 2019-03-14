@@ -1,6 +1,8 @@
 package local.isaac.tt_2018_a031;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
@@ -10,7 +12,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -24,6 +28,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -33,9 +38,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.maps.android.PolyUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -47,15 +54,21 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import local.isaac.tt_2018_a031.PDO.AlertaPDO;
 import local.isaac.tt_2018_a031.PDO.AlertaRegistro;
+import local.isaac.tt_2018_a031.PDO.UbicacionPDO;
+import local.isaac.tt_2018_a031.PDO.Unidad;
 import local.isaac.tt_2018_a031.PDO.ZonaRoja;
 import local.isaac.tt_2018_a031.PDO.ZonasRojasPDO;
 import local.isaac.tt_2018_a031.controller.ParadasCercanasAdapter;
 import local.isaac.tt_2018_a031.model.Parada;
 import local.isaac.tt_2018_a031.viewmodel.AlertaViewModel;
 import local.isaac.tt_2018_a031.viewmodel.MapsViewModel;
+import local.isaac.tt_2018_a031.viewmodel.UbicacionViewModel;
 
 public class Maps extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener {
 
@@ -84,8 +97,40 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
     private int contadorMarkers = 0;
     private List<Circle> circleList = new ArrayList<>();
     private MapsViewModel mapsViewModel;
+    private UbicacionViewModel ubicacionViewModel;
 
+    private List<Marker> markerUnidadesActivas = new ArrayList<>();
+    private List<Unidad> unidadesActivas = new ArrayList<>();
+    private ScheduledExecutorService scheduleTaskExecutor;
 
+    private double [][] vertices = {{19.495308, -99.136121},{19.495356, -99.136335},{19.495306, -99.136558},{19.495351, -99.136762},
+            {19.495460, -99.136834},{19.495554, -99.136869},{19.495895, -99.136805},{19.496186, -99.136794},
+            {19.496756, -99.136687},{19.500438, -99.135961},{19.500654, -99.135915},{19.503001, -99.135471},
+            {19.503219, -99.135435},{19.503296, -99.135399},{19.503470, -99.135253},{19.503738, -99.135241},
+            {19.504357, -99.138863},{19.504359, -99.138940},{19.504351, -99.139004},{19.504382, -99.139043},
+            {19.504404, -99.139100},{19.504400, -99.139161},{19.504398, -99.139204},{19.504431, -99.139281},
+            {19.504952, -99.142259},{19.505149, -99.143418},{19.505140, -99.143600},{19.505272, -99.144400},
+            {19.505317, -99.144606},{19.505461, -99.144997},{19.505567, -99.145207},{19.506300, -99.146268},
+            {19.506528, -99.146735},{19.506594, -99.147060},{19.506607, -99.147464},{19.506601, -99.147601},
+            {19.505174, -99.151361},{19.505154, -99.151376},{19.505126, -99.151374},{19.493800, -99.146883},
+            {19.493737, -99.146734},{19.493691, -99.146652},{19.493659, -99.146549},{19.493659, -99.146443},
+            {19.493678, -99.146381},{19.493720, -99.146325},{19.493801, -99.146230},{19.493930, -99.146152},
+            {19.493957, -99.146146},{19.493970, -99.146149},{19.495165, -99.146644},{19.495690, -99.146800},
+            {19.505011, -99.150491},{19.505162, -99.150545},{19.505186, -99.150543},{19.505522, -99.149645},
+            {19.505549, -99.149333},{19.505574, -99.149208},{19.506377, -99.147114},{19.506313, -99.146728},
+            {19.506268, -99.146569},{19.506177, -99.146383},{19.505552, -99.145475},{19.505480, -99.145370},
+            {19.505356, -99.145143},{19.505255, -99.144916},{19.505170, -99.144658},{19.504994, -99.143745},
+            {19.504887, -99.143352},{19.504191, -99.139382},{19.504190, -99.139322},{19.504200, -99.139255},
+            {19.504197, -99.139233},{19.504169, -99.139198},{19.504148, -99.139144},{19.504150, -99.139086},
+            {19.504166, -99.139039},{19.504114, -99.138911},{19.503547, -99.135705},{19.503475, -99.135664},
+            {19.503420, -99.135643},{19.503338, -99.135625},{19.503263, -99.135632},{19.502937, -99.135691},
+            {19.502730, -99.135691},{19.496323, -99.136923},{19.495984, -99.137034},{19.495642, -99.137120},
+            {19.495582, -99.137165},{19.495525, -99.137239},{19.495474, -99.137280},{19.495465, -99.137318},
+            {19.496095, -99.139939},{19.497657, -99.143353},{19.498015, -99.144108},{19.499131, -99.146847},
+            {19.499109, -99.146894},{19.498939, -99.146989},{19.498897, -99.146972},{19.497793, -99.144289},
+            {19.495890, -99.140134},{19.495684, -99.139409},{19.494588, -99.134659},{19.494628, -99.134567},
+            {19.494688, -99.134520},{19.494747, -99.134520},{19.494837, -99.134590},{19.495093, -99.135681},
+            {19.495179, -99.135726},{19.495265, -99.135844},{19.495308, -99.136121}};
 
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private DrawerLayout drawerLayout;
@@ -145,8 +190,9 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
 
         alertaViewModel = ViewModelProviders.of(this).get(AlertaViewModel.class);
         mapsViewModel = ViewModelProviders.of(this).get(MapsViewModel.class);
+        ubicacionViewModel = ViewModelProviders.of(this).get(UbicacionViewModel.class);
         //recyclerParadasCercanas = (RecyclerView) findViewById(R.id.recyclerview_paradas);
-        linearLayoutManager = new LinearLayoutManager(this);
+        //linearLayoutManager = new LinearLayoutManager(this);
         //adapterParadasCercanas = new ParadasCercanasAdapter(this,paradasCercanas);
         //recyclerParadasCercanas.setLayoutManager(linearLayoutManager);
         //recyclerParadasCercanas.setAdapter(adapterParadasCercanas);
@@ -341,6 +387,123 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
         mMap.animateCamera(miUbicacion);
     }
 
+    private void setUnidadesActivas(){
+        ubicacionViewModel.getUbicacionResponse().observe(Maps.this, (UbicacionPDO ubicacionResponse) -> {
+            if (ubicacionResponse.getUbicacionResponse() != null) {
+                if (ubicacionResponse.getUbicacionResponse().getListaUnidades() != null) {
+                    unidadesActivas.addAll(ubicacionResponse.getUbicacionResponse().getListaUnidades());
+                    for(Unidad unidad : unidadesActivas){
+                        float capacidad = unidad.getPasajeros()*100/unidad.getCapacidad();
+                        MarkerOptions markerOptions = new MarkerOptions();
+
+                        if(capacidad >= 0 && capacidad <= 35.0f)
+                            markerOptions.icon(bitmapDescriptorFromVector(this, R.drawable.ic_trole_aerea));
+                        else if(capacidad > 36.0f && capacidad <= 70.0f)
+                            markerOptions.icon(bitmapDescriptorFromVector(this, R.drawable.ic_trole_aerea_2));
+                        else if(capacidad > 71.0f)
+                            markerOptions.icon(bitmapDescriptorFromVector(this, R.drawable.ic_trole_aerea_3));
+
+                        markerOptions.anchor(0.5f,0.5f);
+                        markerOptions.position(new LatLng(unidad.getLatitud(),unidad.getLongitud()));
+                        markerOptions.rotation(getRotacion(new LatLng(unidad.getLatitud(),unidad.getLongitud())));
+                        markerOptions.alpha(0);
+                        markerOptions.visible(false);
+                        Marker markerUnidad = mMap.addMarker(markerOptions);
+                        markerUnidad.setTag(unidad.getId_trolebus());
+                        markerUnidadesActivas.add(markerUnidad);
+                        fadeInMarker(markerUnidad);
+                    }
+                }
+                ubicacionViewModel.setUbicacionResponse(null);
+            }else{
+                /*Toast toast1 = Toast.makeText(getApplicationContext(), getResources().getString(R.string.sin_unidades), Toast.LENGTH_SHORT);
+                toast1.show();*/
+                return;
+            }
+        });
+    }
+
+    private float getRotacion(LatLng point){
+        float rotacion = 0;
+        float rotacionMarcador = 0;
+
+        for(int x = 0; x < vertices.length - 1; x++) {
+            List<LatLng> rutaSubset = new ArrayList<>();
+            rutaSubset.add(new LatLng(vertices[x][0], vertices[x][1]));
+            rutaSubset.add(new LatLng(vertices[x + 1][0], vertices[x + 1][1]));
+
+            Location locationA = new Location("Punto A");
+            Location locationB = new Location("Punto B");
+
+            locationA.setLatitude(vertices[x][0]);
+            locationA.setLongitude(vertices[x][1]);
+            locationB.setLatitude(vertices[x + 1][0]);
+            locationB.setLongitude(vertices[x + 1][1]);
+
+            float normalizeEnd = locationA.bearingTo(locationB) - rotacion; // rotate start to 0
+            float normalizedEndAbs = (normalizeEnd + 360) % 360;
+
+            int direction = (normalizedEndAbs > 180) ? -1 : 1; // -1 = anticlockwise, 1 = clockwise
+            if (direction > 0) {
+                rotacion = normalizedEndAbs - 10;
+            } else {
+                rotacion = normalizedEndAbs - 360 + 10;
+            }
+
+            rotacion = rotacionMarcador + rotacion;
+            rotacionMarcador = rotacion;
+
+            if(PolyUtil.isLocationOnPath(point,rutaSubset,true,15))
+                break;
+        }
+
+        return rotacionMarcador;
+
+    }
+
+    private void checarUnidadesActivas(){
+        scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+        // This schedule a runnable task every 2 minutes
+        scheduleTaskExecutor.scheduleAtFixedRate(() -> setUnidadesActivas(), 0, 5, TimeUnit.SECONDS);
+    }
+
+    private void fadeOutMarker(Marker markerUnidad){
+
+        Animator animator = ObjectAnimator.ofFloat(markerUnidad, "alpha", 1f, 0f);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                markerUnidad.setVisible(false);
+                for(Marker marker : markerUnidadesActivas)
+                    marker.remove();
+                markerUnidadesActivas.clear();
+                unidadesActivas.clear();
+            }
+            @Override public void onAnimationStart(Animator animator) {}
+            @Override public void onAnimationCancel(Animator animator) {}
+            @Override public void onAnimationRepeat(Animator animator) {}
+        });
+        animator.setDuration(2400).start();
+
+
+    }
+
+    private void fadeInMarker(Marker markerUnidad){
+
+        markerUnidad.setVisible(true);
+        Animator animator = ObjectAnimator.ofFloat(markerUnidad, "alpha", 0f, 1f);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) { fadeOutMarker(markerUnidad); }
+            @Override public void onAnimationStart(Animator animator) {}
+            @Override public void onAnimationCancel(Animator animator) {}
+            @Override public void onAnimationRepeat(Animator animator) {}
+        });
+        animator.setDuration(2400).start();
+
+    }
+
+
     private void obtenerZonasRojas() {
         mapsViewModel.getZonaRojaResponse().observe(Maps.this, (ZonasRojasPDO zonasRojasResponse) -> {
             if (zonasRojasResponse.getZonaRojaResponse() != null) {
@@ -445,77 +608,25 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
         ArrayList puntos = new ArrayList();
         PolylineOptions polylineOptions = new PolylineOptions();
 
-
-        double [][] lat_lon = {{19.495308, -99.136121},{19.495356, -99.136335},{19.495306, -99.136558},{19.495351, -99.136762},
-                {19.495460, -99.136834},{19.495554, -99.136869},{19.495895, -99.136805},{19.496186, -99.136794},
-                {19.496756, -99.136687},{19.500438, -99.135961},{19.500654, -99.135915},{19.503001, -99.135471},
-                {19.503219, -99.135435},{19.503296, -99.135399},{19.503470, -99.135253},{19.503371, -99.134661},
-                {19.503429, -99.134604},{19.503489, -99.134584},{19.503560, -99.134592},{19.503626, -99.134616},
-                {19.504357, -99.138863},{19.504359, -99.138940},{19.504351, -99.139004},{19.504382, -99.139043},
-                {19.504404, -99.139100},{19.504400, -99.139161},{19.504398, -99.139204},{19.504431, -99.139281},
-                {19.504952, -99.142259},{19.505149, -99.143418},{19.505140, -99.143600},{19.505272, -99.144400},
-                {19.505317, -99.144606},{19.505461, -99.144997},{19.505567, -99.145207},{19.506300, -99.146268},
-                {19.506528, -99.146735},{19.506594, -99.147060},{19.506607, -99.147464},{19.506601, -99.147601},
-                {19.505174, -99.151361},{19.505154, -99.151376},{19.505126, -99.151374},{19.493800, -99.146883},
-                {19.493737, -99.146734},{19.493691, -99.146652},{19.493659, -99.146549},{19.493659, -99.146443},
-                {19.493678, -99.146381},{19.493720, -99.146325},{19.493801, -99.146230},{19.493930, -99.146152},
-                {19.493957, -99.146146},{19.493970, -99.146149},{19.495165, -99.146644},{19.495690, -99.146800},
-                {19.505011, -99.150491},{19.505162, -99.150545},{19.505186, -99.150543},{19.505522, -99.149645},
-                {19.505549, -99.149333},{19.505574, -99.149208},{19.506377, -99.147114},{19.506313, -99.146728},
-                {19.506268, -99.146569},{19.506177, -99.146383},{19.505552, -99.145475},{19.505480, -99.145370},
-                {19.505356, -99.145143},{19.505255, -99.144916},{19.505170, -99.144658},{19.504994, -99.143745},
-                {19.504887, -99.143352},{19.504191, -99.139382},{19.504190, -99.139322},{19.504200, -99.139255},
-                {19.504197, -99.139233},{19.504169, -99.139198},{19.504148, -99.139144},{19.504150, -99.139086},
-                {19.504166, -99.139039},{19.504114, -99.138911},{19.503547, -99.135705},{19.503475, -99.135664},
-                {19.503420, -99.135643},{19.503338, -99.135625},{19.503263, -99.135632},{19.502937, -99.135691},
-                {19.502730, -99.135691},{19.496323, -99.136923},{19.495984, -99.137034},{19.495642, -99.137120},
-                {19.495582, -99.137165},{19.495525, -99.137239},{19.495474, -99.137280},{19.495465, -99.137318},
-                {19.496095, -99.139939},{19.497657, -99.143353},{19.498015, -99.144108},{19.499131, -99.146847},
-                {19.499109, -99.146894},{19.498939, -99.146989},{19.498897, -99.146972},{19.497793, -99.144289},
-                {19.495890, -99.140134},{19.495684, -99.139409},{19.494588, -99.134659},{19.494628, -99.134567},
-                {19.494688, -99.134520},{19.494747, -99.134520},{19.494837, -99.134590},{19.495093, -99.135681},
-                {19.495179, -99.135726},{19.495265, -99.135844},{19.495308, -99.136121}};
-
-        for(int x=0; x< lat_lon.length;x++) {
-            puntos.add(new LatLng(lat_lon[x][0], lat_lon[x][1]));
+        for(int x=0; x< vertices.length;x++) {
+            puntos.add(new LatLng(vertices[x][0], vertices[x][1]));
         }
 
         polylineOptions.addAll(puntos);
         polylineOptions.width(15);
-        polylineOptions.color(Color.argb(255,144,12,63));
+        polylineOptions.color(Color.argb(128,144,12,63));
         polylineOptions.geodesic(true);
-
-
         mMap.addPolyline(polylineOptions);
     }
 
-
-/*    private MyBroadcastReceiver myBroadcastReceiver;
-
-    @Override
-    public void onResume(){
-        myBroadcastReceiver = new MyBroadcastReceiver();
-        final IntentFilter intentFilter = new IntentFilter("enviar");
-        LocalBroadcastManager.getInstance(this).registerReceiver(myBroadcastReceiver,intentFilter);
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
-
-    @Override
-    public void onPause(){
-        if(myBroadcastReceiver !=null)
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(myBroadcastReceiver);
-        myBroadcastReceiver = null;
-    }
-
-    public class MyBroadcastReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle b = intent.getExtras();
-            double some = b.getDouble("doblesito");
-            Toast.makeText(Maps.this,String.valueOf(some),Toast.LENGTH_SHORT).show();
-        }
-    }
-*/
 
     public void onPause(){
         super.onPause();
@@ -525,6 +636,11 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
 
     public void onStop(){
         super.onStop();
+        unidadesActivas.clear();
+        for(Marker markerUnidad : markerUnidadesActivas)
+            markerUnidad.remove();
+        markerUnidadesActivas.clear();
+        scheduleTaskExecutor.shutdownNow();
         exit = false;
         //if(hilo.isAlive())
         //if(hilo != null)
@@ -542,6 +658,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
 
     public void onResume(){
         super.onResume();
+        checarUnidadesActivas();
         exit = true;
         if(activar == 1) {
             if (hilo.isAlive()) {
