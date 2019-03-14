@@ -8,6 +8,7 @@
     <color name="colorControlActivated">#388e3c</color>
     <color name="background_delete">#fa315b</color>
     <color name="nombre_contacto">#535353</color>
+    <color name="titulos_menu">#000000</color>
     <color name="numero_contacto">#a9a9a9</color>
     <color name="transp">#8000FF00</color>
 </resources>

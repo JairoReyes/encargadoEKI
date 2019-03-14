@@ -14,6 +14,7 @@ import local.isaac.tt_2018_a031.PDO.RegistroConductorRequest;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusPDO;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusRequest;
 import local.isaac.tt_2018_a031.PDO.TrolebusPDO;
+import local.isaac.tt_2018_a031.PDO.ZonasRojasPDO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -183,6 +184,39 @@ public class RepositoryRetrofit {
 
         return registroTrolebusResponse;
 
+    }
+
+    public MutableLiveData<ZonasRojasPDO> getZonasRojasRequest (){
+
+        final MutableLiveData<ZonasRojasPDO> zonasRojasResponse = new MutableLiveData<>();
+
+        Call<ZonasRojasPDO> call = apiInterface.zonasRojas();
+
+        call.enqueue(new Callback<ZonasRojasPDO>() {
+            @Override
+            public void onResponse(Call<ZonasRojasPDO> call, Response<ZonasRojasPDO> response) {
+                if(response.isSuccessful())
+                    zonasRojasResponse.postValue(response.body());
+                else{
+                    Error httpError = new Error();
+                    httpError.setText(response.code() + ": " + response.message());
+                    ZonasRojasPDO zonasRojashttpError = new ZonasRojasPDO();
+                    zonasRojashttpError.setError(httpError);
+                    zonasRojasResponse.postValue(zonasRojashttpError);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ZonasRojasPDO> call, Throwable t) {
+                Error networkError = new Error();
+                networkError.setText("Fallo en la conexión, vualeva a intentarlo");
+                ZonasRojasPDO zonasRojasNetworkError = new ZonasRojasPDO();
+                zonasRojasNetworkError.setError(networkError);
+                zonasRojasResponse.postValue(zonasRojasNetworkError);
+            }
+        });
+
+        return zonasRojasResponse;
     }
 
 

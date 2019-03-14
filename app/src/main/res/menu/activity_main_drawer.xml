@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/registros"
+            android:icon="@drawable/baseline_contacts_24"
+            android:title="@string/registros"
+            />
+
+        <item
+            android:id="@+id/switch_zonas"
+            android:title="@string/mostrar_zonas"
+            android:icon="@drawable/ic_zonas_rojas"
+            app:actionLayout="@layout/layout_switch"
+            />
+
+        <item
+            android:id="@+id/cerrar_sesion"
+            android:icon="@drawable/baseline_exit_to_app_24"
+            android:title="@string/sesion"
+            />
+    </group>
+
+    <item android:title="@string/otros">
+        <menu>
+            <item
+                android:id="@+id/acerca_de"
+                android:title="@string/acerca"
+                android:icon="@drawable/baseline_people_24"
+                />
+
+            <item
+                android:id="@+id/politica"
+                android:title="@string/privacidad"
+                />
+        </menu>
+    </item>
+
+</menu>

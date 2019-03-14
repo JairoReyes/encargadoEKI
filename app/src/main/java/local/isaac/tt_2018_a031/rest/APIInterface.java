@@ -11,6 +11,7 @@ import local.isaac.tt_2018_a031.PDO.RegistroConductorRequest;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusPDO;
 import local.isaac.tt_2018_a031.PDO.RegistroTrolebusRequest;
 import local.isaac.tt_2018_a031.PDO.TrolebusPDO;
+import local.isaac.tt_2018_a031.PDO.ZonasRojasPDO;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -39,5 +40,8 @@ public interface APIInterface {
 
     @PUT("estadoAlerta")
     Call<QuitarAlertaPDO> quitarAlerta(@Body QuitarAlertaRequest quitarAlertaRequest);
+
+    @GET("zonasRojas")
+    Call<ZonasRojasPDO> zonasRojas();
 
 }

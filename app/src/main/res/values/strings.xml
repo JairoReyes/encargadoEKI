@@ -15,7 +15,13 @@
     <string name="ver_contactos">Ver contactos</string>
 
     <string name="home">Principal</string>
-    <string name="registros">REGISTROS</string>
+    <string name="registros">Registros</string>
+    <string name="sesion">Cerrar sesión</string>
+    <string name="mostrar_zonas">Mostrar zonas rojas</string>
+    <string name="sin_zonas_rojas">No hay zonas rojas al momento</string>
+    <string name="otros">Otros</string>
+    <string name="acerca">Acerca de nosotros</string>
+    <string name="privacidad">Política de privacidad</string>
     <string name="registro_individual">Registro individual</string>
     <string name="open_drawer">Drawer abierto</string>
     <string name="close_drawer">Drawer cerrado</string>

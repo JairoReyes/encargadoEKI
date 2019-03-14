@@ -3,28 +3,30 @@ package local.isaac.tt_2018_a031;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Service;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -35,27 +37,27 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import local.isaac.tt_2018_a031.PDO.AlertaPDO;
 import local.isaac.tt_2018_a031.PDO.AlertaRegistro;
-import local.isaac.tt_2018_a031.controller.DrawerHeader;
-import local.isaac.tt_2018_a031.controller.DrawerMenuItem;
+import local.isaac.tt_2018_a031.PDO.ZonaRoja;
+import local.isaac.tt_2018_a031.PDO.ZonasRojasPDO;
 import local.isaac.tt_2018_a031.controller.ParadasCercanasAdapter;
 import local.isaac.tt_2018_a031.model.Parada;
-import local.isaac.tt_2018_a031.repository.ParadaRepository;
 import local.isaac.tt_2018_a031.viewmodel.AlertaViewModel;
+import local.isaac.tt_2018_a031.viewmodel.MapsViewModel;
 
-public class Maps extends AppCompatActivity implements OnMapReadyCallback {
+public class Maps extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener {
 
     private volatile boolean exit = true;
     private HashMap<Marker, Integer> markers = new HashMap<Marker, Integer>();
@@ -63,7 +65,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     //ParadaRepository paradaRepository= new ParadaRepository(this);
     private MiThread2 hilo = new MiThread2();
     private AlertaViewModel alertaViewModel;
-    ArrayList<String> latitudes = new ArrayList<String>();
+    ArrayList<String> latitudes = new ArrayList<>();
     ArrayList<String> longitudes = new ArrayList<String>();
 
     ArrayList<String> tipos_alertas = new ArrayList<String>();
@@ -80,11 +82,17 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     SharedPreferences sharedpreferences;
     private int indice=0;
     private int contadorMarkers = 0;
+    private List<Circle> circleList = new ArrayList<>();
+    private MapsViewModel mapsViewModel;
 
 
 
-    private PlaceHolderView mDrawerView;
-    private DrawerLayout mDrawer;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private SwitchCompat switchZonasRojas;
+    private TextView nombreUsuario;
+    private TextView emailUsuario;
 
 
     private LinearLayoutManager linearLayoutManager;
@@ -102,14 +110,42 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
         sharedpreferences = getSharedPreferences(preferencias, Context.MODE_PRIVATE);
 
-
-        mDrawer = (DrawerLayout)findViewById(R.id.drawerLayout);
-        mDrawerView = (PlaceHolderView)findViewById(R.id.drawerView);
-        alertaViewModel = ViewModelProviders.of(this).get(AlertaViewModel.class);
-        //recyclerParadasCercanas = (RecyclerView) findViewById(R.id.recyclerview_paradas);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setupDrawer();
+        drawerLayout = findViewById(R.id.drawerLayout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        navigationView = findViewById(R.id.nav_view);
+
+        SharedPreferences pref = getSharedPreferences(Inicio.preferencias, Context.MODE_PRIVATE);
+        String nombre = pref.getString("nombre", null);
+        String mail = pref.getString("expediente", null);
+
+        View hView = navigationView.getHeaderView(0);
+        nombreUsuario = hView.findViewById(R.id.nameTxt);
+        emailUsuario = hView.findViewById(R.id.emailTxt);
+        nombreUsuario.setText(nombre);
+        emailUsuario.setText(mail);
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        switchZonasRojas = (SwitchCompat) navigationView.getMenu().findItem(R.id.switch_zonas).getActionView();
+
+        switchZonasRojas.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if(isChecked){
+                obtenerZonasRojas();
+            }else{
+                for (Circle circle : circleList)
+                    circle.remove();
+                circleList.clear();
+            }
+        });
+
+        alertaViewModel = ViewModelProviders.of(this).get(AlertaViewModel.class);
+        mapsViewModel = ViewModelProviders.of(this).get(MapsViewModel.class);
+        //recyclerParadasCercanas = (RecyclerView) findViewById(R.id.recyclerview_paradas);
         linearLayoutManager = new LinearLayoutManager(this);
         //adapterParadasCercanas = new ParadasCercanasAdapter(this,paradasCercanas);
         //recyclerParadasCercanas.setLayoutManager(linearLayoutManager);
@@ -122,8 +158,43 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     }
     @Override
     public void onBackPressed() {
-        //startService(new Intent(this,ServiceAlarmas.class));
-        moveTaskToBack(true);
+        DrawerLayout drawer = findViewById(R.id.drawerLayout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item){
+        int id = item.getItemId();
+
+        switch(id){
+            case R.id.registros:
+                Intent intent = new Intent(Maps.this,Registros.class);
+                startActivity(intent);
+                break;
+            case R.id.switch_zonas:
+                return false;
+            case R.id.cerrar_sesion:
+                stopService(new Intent(Maps.this,ServiceAlarmas.class));
+                Toast.makeText(this, "Sesión terminada", Toast.LENGTH_SHORT).show();
+                SharedPreferences pref = getSharedPreferences(Inicio.preferencias, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.clear();
+                editor.apply();
+                Intent intent1 = new Intent(Maps.this,SplashActivity.class);
+                startActivity(intent1);
+                break;
+            default:
+                break;
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawerLayout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+
     }
 
 
@@ -184,6 +255,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
         activar=1;
 
 
@@ -269,9 +341,104 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         mMap.animateCamera(miUbicacion);
     }
 
+    private void obtenerZonasRojas() {
+        mapsViewModel.getZonaRojaResponse().observe(Maps.this, (ZonasRojasPDO zonasRojasResponse) -> {
+            if (zonasRojasResponse.getZonaRojaResponse() != null) {
+                if (zonasRojasResponse.getZonaRojaResponse().getZonaRojaList().size() > 0) {
+                    List<ZonaRoja> zonaRojaList = new ArrayList<>();
+                    zonaRojaList.addAll(zonasRojasResponse.getZonaRojaResponse().getZonaRojaList());
+                    mapsViewModel.setZonaRojaResponse(null);
+                    calcularZonasRojas(zonaRojaList);
+                } else {
+                    Toast toast1 = Toast.makeText(getApplicationContext(), getResources().getString(R.string.sin_zonas_rojas), Toast.LENGTH_SHORT);
+                    toast1.show();
+                    mapsViewModel.setZonaRojaResponse(null);
+                    return;
+                }
+            } else if (zonasRojasResponse.getError().getText().startsWith("Fallo en la conexión")) {
+                Toast fail = Toast.makeText(Maps.this, zonasRojasResponse.getError().getText(), Toast.LENGTH_SHORT);
+                fail.show();
+                mapsViewModel.setZonaRojaResponse(null);
+                return;
+            } else {
+                Toast httpError = Toast.makeText(Maps.this, zonasRojasResponse.getError().getText(), Toast.LENGTH_SHORT);
+                httpError.show();
+                mapsViewModel.setZonaRojaResponse(null);
+                return;
+            }
+        });
+    }
 
+    public void calcularZonasRojas(List<ZonaRoja> zonaRojaList){
 
+        List<List<ZonaRoja>> zonasRojas = new ArrayList<>();
 
+        if(zonaRojaList.size() > 1){
+            for(int i = 0; i < zonaRojaList.size() - 1; i++){
+                List<ZonaRoja> zonaRojaList1 = new ArrayList<>();
+                zonaRojaList1.add(zonaRojaList.get(i));
+                Location locationA = new Location("Punto A");
+                locationA.setLatitude(Double.valueOf(zonaRojaList.get(i).getLatitud()));
+                locationA.setLongitude(Double.valueOf(zonaRojaList.get(i).getLongitud()));
+
+                for(int j = i + 1; j < zonaRojaList.size(); j++){
+                    Location locationB = new Location("Punto B");
+                    locationB.setLatitude(Double.valueOf(zonaRojaList.get(j).getLatitud()));
+                    locationB.setLongitude(Double.valueOf(zonaRojaList.get(j).getLongitud()));
+                    float distanceTo = locationA.distanceTo(locationB);
+
+                    if(distanceTo <= 100)
+                        zonaRojaList1.add(zonaRojaList.get(j));
+                }
+                zonasRojas.add(zonaRojaList1);
+            }
+
+            dibujarZonasRojas(zonasRojas);
+
+        }else if(zonaRojaList.size() == 1){
+            List<ZonaRoja> zonaRojaList1 = new ArrayList<>();
+            zonaRojaList1.add(zonaRojaList.get(0));
+            zonasRojas.add(zonaRojaList1);
+
+            dibujarZonasRojas(zonasRojas);
+        }
+    }
+
+    public void dibujarZonasRojas(List<List<ZonaRoja>> zonasRojas){
+
+        for(int i = 0; i < zonasRojas.size(); i++){
+
+            int j = zonasRojas.get(i).size();
+            double latitud = Double.valueOf(zonasRojas.get(i).get(0).getLatitud());
+            double longitud = Double.valueOf(zonasRojas.get(i).get(0).getLongitud());
+
+            CircleOptions circleOptions = new CircleOptions();
+            circleOptions.center(new LatLng(latitud,longitud));
+            circleOptions.radius(100);
+
+            if(j >= 1 && j <= 3 ){
+                circleOptions.fillColor(Color.parseColor("#A8FFD200"));
+                circleOptions.strokeColor(Color.parseColor("#A8FFD200"));
+            }else if(j >= 4 && j <= 6){
+                circleOptions.fillColor(Color.parseColor("#A8FFA500"));
+                circleOptions.strokeColor(Color.parseColor("#A8FFA500"));
+            }else if(j >= 7 && j <= 9) {
+                circleOptions.fillColor(Color.parseColor("#A8FF7800"));
+                circleOptions.strokeColor(Color.parseColor("#A8FF7800"));
+            }else if(j >= 10 && j <= 12){
+                circleOptions.fillColor(Color.parseColor("#A8FF4B00"));
+                circleOptions.strokeColor(Color.parseColor("#A8FF4B00"));
+            }else if(j >= 13){
+                circleOptions.fillColor(Color.parseColor("#A8FF1E00"));
+                circleOptions.strokeColor(Color.parseColor("#A8FF1E00"));
+            }
+
+            Circle circle = mMap.addCircle(circleOptions);
+            circleList.add(circle);
+
+        }
+
+    }
 
     private void dibujarRuta(){
 
@@ -323,37 +490,6 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     }
 
 
-    private void setupDrawer(){
-        SharedPreferences pref = getSharedPreferences(Inicio.preferencias, Context.MODE_PRIVATE);
-        String nombre = pref.getString("nombre", null);
-        String mail = pref.getString("expediente", null);
-        mDrawerView
-                .addView(new DrawerHeader(nombre, mail))
-                .addView(new DrawerMenuItem(this, DrawerMenuItem.DRAWER_MENU_ITEM_REGISTROS))
-                /*.addView(new DrawerMenuItem(this, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACTOS))
-                /*.addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
-                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_GROUPS))
-                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIFICATIONS))
-                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_TERMS))
-                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_SETTINGS))*/
-                .addView(new DrawerMenuItem(this, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
-
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_drawer, R.string.close_drawer){
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-
-        mDrawer.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
-    }
-
-
 /*    private MyBroadcastReceiver myBroadcastReceiver;
 
     @Override
@@ -397,6 +533,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     public void onDestroy(){
+        super.onDestroy();
         //if(hilo.isAlive())
         exit = false;
         //startService(new Intent(this,ServiceAlarmas.class));
@@ -415,6 +552,9 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         }
         stopService(new Intent(Maps.this,ServiceAlarmas.class));
     }
+
+
+
     class MiThread2 extends Thread {
         @Override
         public void run() {
