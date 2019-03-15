@@ -2,152 +2,221 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:orientation="vertical"
-    android:padding="5dip" >
+    android:padding="5dip">
 
     <!--  listrow  -->
 
-    <TextView
-        android:id="@+id/titulo"
-        android:layout_gravity="center"
-        android:text="@string/registro_individual"
-        android:textSize="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        app:cardElevation="5dp"
+        app:cardBackgroundColor="#ffff">
 
-    <TextView
-        android:id="@+id/nombre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/nombre2"
-        android:textColor="#040404"
-        android:typeface="sans"
-        android:textSize="18dp"
-        android:layout_centerVertical="true"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:paddingLeft="5dp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/texto_nombre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/placa"
-        android:focusable="false"/>
+            <TextView
+                android:id="@+id/titulo"
+                android:layout_gravity="center"
+                android:text="@string/registro_individual"
+                android:textSize="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    <!-- titulo de la categoria -->
-    <TextView
-        android:id="@+id/apellido"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/apellido"
-        android:textColor="#040404"
-        android:typeface="sans"
-        android:textSize="18dp"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/thumbnail" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/nombre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nombre2"
+                    android:textColor="#040404"
+                    android:typeface="sans"
+                    android:textSize="18dp"
+                    android:layout_centerVertical="true"
+                    />
+                <EditText
+                    android:id="@+id/texto_nombre"
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"/>
+            </LinearLayout>
 
-    <EditText
-        android:id="@+id/texto_apellido"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/fechaI"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="@string/fecha_inicial"
-        android:textColor="#040404"
-        android:textSize="18dp"
-        android:typeface="sans" />
-    <EditText
-        android:id="@+id/texto_fechaI"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"/>
+            <!-- titulo de la categoria -->
+                <TextView
+                    android:id="@+id/apellido"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/apellido"
+                    android:textColor="#040404"
+                    android:typeface="sans"
+                    android:textSize="18dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/thumbnail" />
 
-    <TextView
-        android:id="@+id/paradaI"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="@string/paradaI"
-        android:textColor="#040404"
-        android:textSize="18dp"
-        android:typeface="sans" />
+                <EditText
+                    android:id="@+id/texto_apellido"
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"/>
+            </LinearLayout>
 
-    <EditText
-        android:id="@+id/texto_paradaI"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/fechaF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="@string/fecha_fin"
-        android:textColor="#040404"
-        android:textSize="18dp"
-        android:typeface="sans" />
-    <EditText
-        android:id="@+id/texto_fechaF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"/>
+                <TextView
+                    android:id="@+id/fechaI"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/thumbnail"
+                    android:text="@string/fecha_inicial"
+                    android:textColor="#040404"
+                    android:textSize="18dp"
+                    android:typeface="sans" />
+                <EditText
+                    android:id="@+id/texto_fechaI"
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"/>
+            </LinearLayout>
 
-    <TextView
-        android:id="@+id/paradaF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="@string/paradaF"
-        android:textColor="#040404"
-        android:textSize="18dp"
-        android:typeface="sans" />
-    <EditText
-        android:id="@+id/texto_paradaF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tiempo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="@string/tiempo"
-        android:textColor="#040404"
-        android:textSize="18dp"
-        android:typeface="sans" />
-    <EditText
-        android:id="@+id/texto_tiempo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"/>
+                <TextView
+                    android:id="@+id/paradaI"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/thumbnail"
+                    android:text="@string/paradaI"
+                    android:textColor="#040404"
+                    android:textSize="18dp"
+                    android:typeface="sans" />
+
+                <EditText
+                    android:id="@+id/texto_paradaI"
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/fechaF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/thumbnail"
+                    android:text="@string/fecha_fin"
+                    android:textColor="#040404"
+                    android:textSize="18dp"
+                    android:typeface="sans" />
+                <EditText
+                    android:id="@+id/texto_fechaF"
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/paradaF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/thumbnail"
+                    android:text="@string/paradaF"
+                    android:textColor="#040404"
+                    android:textSize="18dp"
+                    android:typeface="sans" />
+                <EditText
+                    android:id="@+id/texto_paradaF"
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tiempo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/thumbnail"
+                    android:text="@string/tiempo"
+                    android:textColor="#040404"
+                    android:textSize="18dp"
+                    android:typeface="sans" />
+                <EditText
+                    android:id="@+id/texto_tiempo"
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"/>
+            </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/calificacion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="@string/cali"
-        android:textColor="#040404"
-        android:textSize="18dp"
-        android:typeface="sans" />
-    <EditText
-        android:id="@+id/texto_calificacion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/calificacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/thumbnail"
+                    android:text="@string/cali"
+                    android:textColor="#040404"
+                    android:textSize="18dp"
+                    android:typeface="sans" />
+                <RatingBar
+                    android:id="@+id/texto_calificacion"
+                    android:layout_width="wrap_content"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="3dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>
