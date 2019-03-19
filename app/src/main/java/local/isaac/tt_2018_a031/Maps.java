@@ -732,7 +732,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             }
             else {
                 contadorMarkers = 0;
-                Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
                 latitudes.clear();
                 longitudes.clear();
                 id_trolebuses.clear();
