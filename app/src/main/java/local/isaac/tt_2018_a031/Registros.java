@@ -207,8 +207,9 @@ public class Registros extends AppCompatActivity {
         editor.putBoolean("activity_executed", true);
         editor.commit();
         titulos.add(nombre);
-        imagen.add(foto);
+        imagen.add("http://206.189.166.161:8080/"+foto);
         ids.add(id);
+        System.out.println("Esta es la imagen " + foto);
 
     }
 

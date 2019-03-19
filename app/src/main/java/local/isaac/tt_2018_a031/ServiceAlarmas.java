@@ -134,8 +134,8 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
                                 notificationManager.notify(1,mbuilder.build());
                                 //stopService(new Intent(getApplicationContext(),ServiceAlarmas.class));
                             }
-                            else
-                                Toast.makeText(getApplicationContext(), "No hay registros", Toast.LENGTH_LONG).show();
+                            //else
+                              //  Toast.makeText(getApplicationContext(), "No hay registros", Toast.LENGTH_LONG).show();
                             //Toast.makeText(getApplicationContext(),var,Toast.LENGTH_LONG).show();
                         }else{
                             System.out.println("No fue successful");

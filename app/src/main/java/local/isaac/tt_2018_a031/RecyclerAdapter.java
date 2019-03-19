@@ -31,6 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             title = (TextView) view.findViewById(R.id.list_row_title);
             image = (ImageView) view.findViewById(R.id.list_row_image);
             ids = (TextView) view.findViewById(R.id.list_row_id);
+            ids.setVisibility(View.GONE);
             //year = (TextView) view.findViewById(R.id.year);
         }
     }
@@ -68,6 +69,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         holder.title.setText(titulos.get(position));
         holder.ids.setText(ids.get(position));
         //holder.genre.setText(movie.getGenre());
+        //System.out.println("Esta es la imagen " + imagenes.get(position));
         if(imagenes == null){
             //Picasso.get().load(R.drawable.descarga).into(holder.image);
             if(modelos.get(position).equals("Serie 9000"))
