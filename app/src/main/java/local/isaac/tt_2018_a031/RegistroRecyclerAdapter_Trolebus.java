@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,7 +25,9 @@ public class RegistroRecyclerAdapter_Trolebus extends RecyclerView.Adapter<Regis
     LayoutInflater inflater;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView tnombre,tapellido,tfecha_i,tparada_i,tfecha_f,tparada_f,ttiempo,tcalificacion,ttitulo;
+        public TextView tnombre,tapellido,tfecha_i,tparada_i,tfecha_f,tparada_f,ttiempo,ttitulo;
+        public RatingBar tcalificacion;
+
 
         public MyViewHolder(View view) {
             super(view);
@@ -35,7 +38,7 @@ public class RegistroRecyclerAdapter_Trolebus extends RecyclerView.Adapter<Regis
             tfecha_f = (TextView) view.findViewById(R.id.texto_fechaF);
             tparada_f = (TextView) view.findViewById(R.id.texto_paradaF);
             ttiempo = (TextView) view.findViewById(R.id.texto_tiempo);
-            tcalificacion = (TextView) view.findViewById(R.id.texto_calificacion);
+            tcalificacion = (RatingBar) view.findViewById(R.id.texto_calificacion);
             ttitulo = (TextView) view.findViewById(R.id.titulo);
             //year = (TextView) view.findViewById(R.id.year);
         }
@@ -78,7 +81,7 @@ public class RegistroRecyclerAdapter_Trolebus extends RecyclerView.Adapter<Regis
         holder.tfecha_f.setText(fecha_f.get(position));
         holder.tparada_f.setText(parada_fin.get(position));
         holder.ttiempo.setText(tiempo.get(position));
-        holder.tcalificacion.setText(calificacion.get(position));
+        holder.tcalificacion.setRating(Float.parseFloat(calificacion.get(position)));
         //holder.genre.setText(movie.getGenre());
         //if(imagenes == null)
         //  Picasso.get().load(R.drawable.descarga).into(holder.image);
