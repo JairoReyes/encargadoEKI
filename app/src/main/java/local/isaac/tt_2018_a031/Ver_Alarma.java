@@ -78,12 +78,12 @@ public class Ver_Alarma extends AppCompatActivity {
         atendida.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Ver_Alarma.this, Maps.class);
+                //Intent intent = new Intent(Ver_Alarma.this, Maps.class);
 
                 quitarAlertaViewModel.getQuitarAlertaResponse("0", id_alerta).observe(Ver_Alarma.this, (QuitarAlertaPDO quitarAlertaResponse) -> {
                     procesarRespuesta(quitarAlertaResponse);
                 });
-                startActivity(intent);
+                //startActivity(intent);
                 finish();
             }
         });
@@ -93,8 +93,8 @@ public class Ver_Alarma extends AppCompatActivity {
             public void onClick(View v) {
 
                 //stopService(new Intent(Ver_Alarma.this,ServiceAlarmas.class));
-                Intent intentAction = new Intent(Ver_Alarma.this,Maps.class);
-                startActivity(intentAction);
+                //Intent intentAction = new Intent(Ver_Alarma.this,Maps.class);
+                //startActivity(intentAction);
                 finish();
             }
         });
