@@ -124,7 +124,7 @@ public class ServiceAlarmas extends Service implements NavigationView.OnNavigati
 
                                     mbuilder = new NotificationCompat.Builder(getApplicationContext(), "canal1");
                                 }
-                                mbuilder.setSmallIcon(R.drawable.ic_logoeki).setContentTitle("Jairo").setContentText("Alan")
+                                mbuilder.setSmallIcon(R.drawable.ic_logoeki).setContentTitle("Alerta recibida").setContentText("Ha recibido una nueva alerta de un conductor")
                                         .setColor(getApplicationContext().getResources().getColor(R.color.colorAccent))
                                         .setContentIntent(pendingIntent)
                                         .setAutoCancel(true)
