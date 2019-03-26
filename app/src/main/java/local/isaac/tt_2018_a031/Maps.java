@@ -23,14 +23,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +64,7 @@ import java.util.concurrent.TimeUnit;
 
 import local.isaac.tt_2018_a031.PDO.AlertaPDO;
 import local.isaac.tt_2018_a031.PDO.AlertaRegistro;
+import local.isaac.tt_2018_a031.PDO.QuitarAlertaPDO;
 import local.isaac.tt_2018_a031.PDO.UbicacionPDO;
 import local.isaac.tt_2018_a031.PDO.Unidad;
 import local.isaac.tt_2018_a031.PDO.ZonaRoja;
@@ -68,6 +73,7 @@ import local.isaac.tt_2018_a031.controller.ParadasCercanasAdapter;
 import local.isaac.tt_2018_a031.model.Parada;
 import local.isaac.tt_2018_a031.viewmodel.AlertaViewModel;
 import local.isaac.tt_2018_a031.viewmodel.MapsViewModel;
+import local.isaac.tt_2018_a031.viewmodel.QuitarAlertaViewModel;
 import local.isaac.tt_2018_a031.viewmodel.UbicacionViewModel;
 
 public class Maps extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener {
@@ -89,6 +95,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
     ArrayList<String> id_alertas = new ArrayList<String>();
     private Marker marker = null;
     private Bitmap imageBitmap, resizedBitmap;
+    private int finalizo = 1;
 
     public static final String preferencias = "MyPrefs" ;
     private int activar=0;
@@ -102,6 +109,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
     private List<Marker> markerUnidadesActivas = new ArrayList<>();
     private List<Unidad> unidadesActivas = new ArrayList<>();
     private ScheduledExecutorService scheduleTaskExecutor;
+    private QuitarAlertaViewModel quitarAlertaViewModel;
 
     private double [][] vertices = {{19.495308, -99.136121},{19.495356, -99.136335},{19.495306, -99.136558},{19.495351, -99.136762},
             {19.495460, -99.136834},{19.495554, -99.136869},{19.495895, -99.136805},{19.496186, -99.136794},
@@ -154,6 +162,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
         startService(new Intent(this,LocationService.class));
 
         sharedpreferences = getSharedPreferences(preferencias, Context.MODE_PRIVATE);
+        quitarAlertaViewModel = ViewModelProviders.of(this).get(QuitarAlertaViewModel.class);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -224,7 +233,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             case R.id.switch_zonas:
                 return false;
             case R.id.cerrar_sesion:
-                stopService(new Intent(Maps.this,ServiceAlarmas.class));
+                //stopService(new Intent(Maps.this,ServiceAlarmas.class));
                 Toast.makeText(this, "Sesión terminada", Toast.LENGTH_SHORT).show();
                 SharedPreferences pref = getSharedPreferences(Inicio.preferencias, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
@@ -232,6 +241,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                 editor.apply();
                 Intent intent1 = new Intent(Maps.this,SplashActivity.class);
                 startActivity(intent1);
+                finalizo = 0;
+                finish();
                 break;
             default:
                 break;
@@ -353,15 +364,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
 
 
 
-                    //Toast.makeText(getApplicationContext(), "Id del marcador: " + markers.get(marker), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(Maps.this, Ver_Alarma.class);
-
-                    intent.putExtra("fecha",fechas.get(markers.get(marker)));
-                    intent.putExtra("placas",placas.get(markers.get(marker)));
-                    intent.putExtra("id_alerta",id_alertas.get(markers.get(marker)));
-                    intent.putExtra("tipo_alerta",tipos_alertas.get(markers.get(marker)));
-                    intent.putExtra("id_trolebus",id_trolebuses.get(markers.get(marker)));
-                    intent.putExtra("nombre",nombres.get(markers.get(marker)));
+                    /*
 
                     fechas.remove(markers.get(marker));
                     placas.remove(markers.get(marker));
@@ -372,9 +375,96 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                     latitudes.remove(markers.get(marker));
                     longitudes.remove(markers.get(marker));
 
-                    markers.remove(marker);
+                    //markers.remove(marker);
+                    //marker.remove();
+
+                    latitudes.clear();
+                    longitudes.clear();
+                    id_trolebuses.clear();
+                    fechas.clear();
+                    nombres.clear();
+                    placas.clear();
+                    tipos_alertas.clear();
+                    id_alertas.clear();
+                    markers.clear();
                     marker.remove();
-                    startActivityForResult(intent, 0);
+                    */
+
+                    AlertDialog.Builder calificacion = new AlertDialog.Builder(Maps.this);
+                    LayoutInflater inflater = Maps.this.getLayoutInflater();
+                    View vi = inflater.inflate(R.layout.activity_ver__alarma, null);
+                    //SharedPreferences pref1 = getSharedPreferences(Inicio.preferencias, Context.MODE_PRIVATE);
+                    //String idUsr = Integer.toString(pref1.getInt("userKey", -1));
+
+                    calificacion.setView(vi);
+                    //////
+
+                    TextView mensaje_principal = (TextView) vi.findViewById(R.id.mensaje_principal);
+                    TextView unidad = (TextView) vi.findViewById(R.id.unidad);
+                    TextView conductor = (TextView) vi.findViewById(R.id.conductor);
+                    TextView fecha = (TextView) vi.findViewById(R.id.fecha);
+                    TextView hora = (TextView) vi.findViewById(R.id.hora);
+                    TextView placa = (TextView) vi.findViewById(R.id.placa);
+                    Button boton = (Button) vi.findViewById(R.id.button);
+                    Button atendida = (Button) vi.findViewById(R.id.atendida);
+                    ImageView imagen_alarma = (ImageView) vi.findViewById(R.id.imagen_alarma);
+
+
+
+                    if(tipos_alertas.get(markers.get(marker)).equals("Emergencia"))
+                        imagen_alarma.setImageResource(R.drawable.emergencia);
+                    else if(tipos_alertas.get(markers.get(marker)).equals("Panico"))
+                        imagen_alarma.setImageResource(R.drawable.panico);
+                    else if(tipos_alertas.get(markers.get(marker)).equals("Vial"))
+                        imagen_alarma.setImageResource(R.drawable.vial);
+                    else
+                        imagen_alarma.setImageResource(R.drawable.averia);
+                    mensaje_principal.setText("El botón de " + tipos_alertas.get(markers.get(marker)) + " ha sido presionado con el id " + id_alertas.get(markers.get(marker)));
+                    unidad.setText("UNIDAD: " + id_trolebuses.get(markers.get(marker)));
+                    placa.setText("PLACAS; " + placas.get(markers.get(marker)));
+                    conductor.setText("CONDUCTOR: " + nombres.get(markers.get(marker)));
+                    fecha.setText("FECHA: " + fechas.get(markers.get(marker)).split(" ")[0]);
+                    hora.setText("HORA: " + fechas.get(markers.get(marker)).split(" ")[1]);
+
+                    AlertDialog dialog = calificacion.create();
+                    boton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    atendida.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            quitarAlertaViewModel.setQuitarAlertaResponse(null);
+                            //Toast.makeText(Maps.this,"Id alerta" + id_alertas.get(markers.get(marker)),Toast.LENGTH_LONG).show();
+                            quitarAlertaViewModel.getQuitarAlertaResponse("0", id_alertas.get(markers.get(marker))).observe(Maps.this, (QuitarAlertaPDO quitarAlertaResponse) -> {
+                                procesarRespuesta(quitarAlertaResponse);
+                            });
+
+                            //Toast.makeText(Maps.this,"Id alerta" + id_alertas.get(markers.get(marker)),Toast.LENGTH_LONG).show();
+
+                            fechas.remove(markers.get(marker));
+                            placas.remove(markers.get(marker));
+                            id_alertas.remove(markers.get(marker));
+                            tipos_alertas.remove(markers.get(marker));
+                            id_trolebuses.remove(markers.get(marker));
+                            nombres.remove(markers.get(marker));
+                            latitudes.remove(markers.get(marker));
+                            longitudes.remove(markers.get(marker));
+
+                            markers.remove(marker);
+                            marker.remove();
+
+
+
+                            dialog.dismiss();
+                        }
+                    });
+
+                    dialog.getWindow().getDecorView().setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                    dialog.show();
+
 
 
                 }
@@ -631,7 +721,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
     public void onPause(){
         super.onPause();
         exit = false;
-        startService(new Intent(Maps.this,ServiceAlarmas.class));
+        if(finalizo != 0)
+            startService(new Intent(Maps.this,ServiceAlarmas.class));
     }
 
     public void onStop(){
@@ -678,6 +769,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
 
             //stopService(new Intent(Maps.this,ServiceAlarmas.class));
             while(exit) {
+
                 //System.out.println("Esto es el hilo");
                 alertaViewModel.setAlertaResponse(null);
                 alertaViewModel.getAlertaResponse().observe(Maps.this, (AlertaPDO alertaResponse) -> {
@@ -733,6 +825,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             else {
                 contadorMarkers = 0;
                 //Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
+                /*
                 latitudes.clear();
                 longitudes.clear();
                 id_trolebuses.clear();
@@ -741,6 +834,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                 placas.clear();
                 tipos_alertas.clear();
                 id_alertas.clear();
+                markers.clear();
+                mMap.clear();*/
             }
         }
         else{
@@ -768,6 +863,18 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
         id_alertas.add(id_alerta);
 
 
+    }
+
+
+    public void procesarRespuesta(QuitarAlertaPDO quitarAlertaResponse){
+        if(quitarAlertaResponse.getQuitarAlertaResponse() != null){
+
+            Toast.makeText(this, "Alerta atendida", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(this, quitarAlertaResponse.getError().getText(), Toast.LENGTH_SHORT).show();
+            quitarAlertaViewModel.setQuitarAlertaResponse(null);
+        }
     }
 
 
