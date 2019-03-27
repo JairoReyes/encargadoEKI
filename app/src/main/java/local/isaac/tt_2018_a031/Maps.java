@@ -54,6 +54,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +72,7 @@ import local.isaac.tt_2018_a031.PDO.ZonaRoja;
 import local.isaac.tt_2018_a031.PDO.ZonasRojasPDO;
 import local.isaac.tt_2018_a031.controller.ParadasCercanasAdapter;
 import local.isaac.tt_2018_a031.model.Parada;
+import local.isaac.tt_2018_a031.repository.ParadaRepository;
 import local.isaac.tt_2018_a031.viewmodel.AlertaViewModel;
 import local.isaac.tt_2018_a031.viewmodel.MapsViewModel;
 import local.isaac.tt_2018_a031.viewmodel.QuitarAlertaViewModel;
@@ -81,7 +83,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
     private volatile boolean exit = true;
     private HashMap<Marker, Integer> markers = new HashMap<Marker, Integer>();
     private GoogleMap mMap;
-    //ParadaRepository paradaRepository= new ParadaRepository(this);
+    ParadaRepository paradaRepository= new ParadaRepository(this);
     private MiThread2 hilo = new MiThread2();
     private AlertaViewModel alertaViewModel;
     ArrayList<String> latitudes = new ArrayList<>();
@@ -153,6 +155,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
     private ParadasCercanasAdapter adapterParadasCercanas;
     private List<Parada> paradasCercanas = new ArrayList<>();
     private Toolbar toolbar;
+    private ClusterManager<paradaItem> mClusterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,7 +317,11 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
         mMap = googleMap;
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         activar=1;
-
+        mClusterManager = new ClusterManager<>(this, mMap);
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        final CustomClusterRenderer renderer = new CustomClusterRenderer(this, mMap, mClusterManager);
+        mClusterManager.setRenderer(renderer);
 
         //hilo = new MiThread2();
         if(hilo.getState() == Thread.State.NEW)
@@ -328,18 +335,22 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             toast.show();
             finish();
         }*/
-        dibujarRuta();
+
         int a = 0;
 
-        /*
+
         final List<Parada> parad = paradaRepository.obtenerParadasPorIdParadas();
         for (Parada parada : parad){
             LatLng paradas = new LatLng(parada.getUbicacionLatitud(), parada.getUbicacionLongitud());
-            mMap.addMarker(new MarkerOptions().position(paradas).title(parada.getNombre()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_parada)));
+            paradaItem par = new paradaItem(paradas, parada.getNombre());
+            mClusterManager.addItem(par);
+            //mMap.addMarker(new MarkerOptions().position(paradas).title(parada.getNombre()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_parada)));
             /*distanciaEntreDosPuntos[a][0] = Double.valueOf(a + 1);
             distanciaEntreDosPuntos[a][1] = Math.pow(parada.getUbicacionLatitud() - lat, 2) + Math.pow(parada.getUbicacionLongitud() - lat, 2);
-            a++;
-        }*/
+            a++;*/
+        }
+
+        dibujarRuta();
 
 
 
