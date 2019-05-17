@@ -400,7 +400,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                     markers.clear();
                     marker.remove();
                     */
-
+                    exit = false;
                     AlertDialog.Builder calificacion = new AlertDialog.Builder(Maps.this);
                     LayoutInflater inflater = Maps.this.getLayoutInflater();
                     View vi = inflater.inflate(R.layout.activity_ver__alarma, null);
@@ -441,6 +441,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                     boton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            exit = true;
                             dialog.dismiss();
                         }
                     });
@@ -468,7 +469,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                             marker.remove();
 
 
-
+                            exit = true;
                             dialog.dismiss();
                         }
                     });
@@ -787,7 +788,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                     procesarRespuestaAlerta(alertaResponse);
                 });
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
