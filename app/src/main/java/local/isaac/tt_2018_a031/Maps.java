@@ -81,6 +81,7 @@ import local.isaac.tt_2018_a031.viewmodel.UbicacionViewModel;
 public class Maps extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener {
 
     private volatile boolean exit = true;
+    private volatile boolean exit2 = true;
     private HashMap<Marker, Integer> markers = new HashMap<Marker, Integer>();
     private GoogleMap mMap;
     ParadaRepository paradaRepository= new ParadaRepository(this);
@@ -400,7 +401,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                     markers.clear();
                     marker.remove();
                     */
-                    exit = false;
+                    exit2 = false;
                     AlertDialog.Builder calificacion = new AlertDialog.Builder(Maps.this);
                     LayoutInflater inflater = Maps.this.getLayoutInflater();
                     View vi = inflater.inflate(R.layout.activity_ver__alarma, null);
@@ -441,7 +442,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                     boton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            exit = true;
+                            exit2 = true;
                             dialog.dismiss();
                         }
                     });
@@ -469,7 +470,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                             marker.remove();
 
 
-                            exit = true;
+                            exit2 = true;
                             dialog.dismiss();
                         }
                     });
@@ -783,14 +784,16 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             while(exit) {
 
                 //System.out.println("Esto es el hilo");
-                alertaViewModel.setAlertaResponse(null);
-                alertaViewModel.getAlertaResponse().observe(Maps.this, (AlertaPDO alertaResponse) -> {
-                    procesarRespuestaAlerta(alertaResponse);
-                });
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if(exit2){
+                    alertaViewModel.setAlertaResponse(null);
+                    alertaViewModel.getAlertaResponse().observe(Maps.this, (AlertaPDO alertaResponse) -> {
+                        procesarRespuestaAlerta(alertaResponse);
+                    });
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
