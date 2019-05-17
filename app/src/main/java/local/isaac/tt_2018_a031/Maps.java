@@ -442,7 +442,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                     boton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            exit2 = true;
+                            exit2=true;
                             dialog.dismiss();
                         }
                     });
@@ -456,7 +456,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                             });
 
                             //Toast.makeText(Maps.this,"Id alerta" + id_alertas.get(markers.get(marker)),Toast.LENGTH_LONG).show();
-
+                            /*
                             fechas.remove(markers.get(marker));
                             placas.remove(markers.get(marker));
                             id_alertas.remove(markers.get(marker));
@@ -468,9 +468,38 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
 
                             markers.remove(marker);
                             marker.remove();
+                            mMap.clear();*/
+                            contadorMarkers = 0;
+                            latitudes.clear();
+                            longitudes.clear();
+                            id_trolebuses.clear();
+                            fechas.clear();
+                            nombres.clear();
+                            placas.clear();
+                            tipos_alertas.clear();
+                            id_alertas.clear();
+                            markers.clear();
+                            mMap.clear();
 
 
-                            exit2 = true;
+                            //mMap.setOnCameraIdleListener(mClusterManager);
+                            //mMap.setOnMarkerClickListener(mClusterManager);
+                            //final CustomClusterRenderer renderer = new CustomClusterRenderer(Maps.this, mMap, mClusterManager);
+                            mClusterManager.setRenderer(renderer);
+
+                            final List<Parada> parad = paradaRepository.obtenerParadasPorIdParadas();
+                            //mClusterManager.removeItem();mClusterManager.
+                            mClusterManager.clearItems();
+                            for (Parada parada : parad){
+                                LatLng paradas = new LatLng(parada.getUbicacionLatitud(), parada.getUbicacionLongitud());
+                                paradaItem par = new paradaItem(paradas, parada.getNombre());
+                                mClusterManager.addItem(par);
+                            }
+
+                            dibujarRuta();
+
+
+                            exit2=true;
                             dialog.dismiss();
                         }
                     });
@@ -784,14 +813,16 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             while(exit) {
 
                 //System.out.println("Esto es el hilo");
-                alertaViewModel.setAlertaResponse(null);
-                alertaViewModel.getAlertaResponse().observe(Maps.this, (AlertaPDO alertaResponse) -> {
-                    procesarRespuestaAlerta(alertaResponse);
-                });
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if(exit2) {
+                    alertaViewModel.setAlertaResponse(null);
+                    alertaViewModel.getAlertaResponse().observe(Maps.this, (AlertaPDO alertaResponse) -> {
+                        procesarRespuestaAlerta(alertaResponse);
+                    });
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -804,18 +835,6 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             //Marker marker;
             List<AlertaRegistro> alertas = alertaResponse.getAlertaResponse().getListaAlerta();
             if(alertas != null) {
-                if(exit2) {
-                    markers.clear();
-                    contadorMarkers = 0;
-                    latitudes.clear();
-                    longitudes.clear();
-                    id_trolebuses.clear();
-                    fechas.clear();
-                    nombres.clear();
-                    placas.clear();
-                    tipos_alertas.clear();
-                    id_alertas.clear();
-                }
                 for (AlertaRegistro alerta : alertas){
 
                     //if(alerta.getTipo_alerta().equals("Emergencia"))
