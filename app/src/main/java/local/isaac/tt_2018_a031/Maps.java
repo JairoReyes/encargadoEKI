@@ -802,6 +802,16 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             //Marker marker;
             List<AlertaRegistro> alertas = alertaResponse.getAlertaResponse().getListaAlerta();
             if(alertas != null) {
+                markers.clear();
+                contadorMarkers = 0;
+                latitudes.clear();
+                longitudes.clear();
+                id_trolebuses.clear();
+                fechas.clear();
+                nombres.clear();
+                placas.clear();
+                tipos_alertas.clear();
+                id_alertas.clear();
                 for (AlertaRegistro alerta : alertas){
 
                     //if(alerta.getTipo_alerta().equals("Emergencia"))
