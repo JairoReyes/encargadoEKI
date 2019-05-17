@@ -784,16 +784,14 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             while(exit) {
 
                 //System.out.println("Esto es el hilo");
-                if(exit2){
-                    alertaViewModel.setAlertaResponse(null);
-                    alertaViewModel.getAlertaResponse().observe(Maps.this, (AlertaPDO alertaResponse) -> {
-                        procesarRespuestaAlerta(alertaResponse);
-                    });
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                alertaViewModel.setAlertaResponse(null);
+                alertaViewModel.getAlertaResponse().observe(Maps.this, (AlertaPDO alertaResponse) -> {
+                    procesarRespuestaAlerta(alertaResponse);
+                });
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
 
             }
@@ -806,6 +804,18 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
             //Marker marker;
             List<AlertaRegistro> alertas = alertaResponse.getAlertaResponse().getListaAlerta();
             if(alertas != null) {
+                if(exit2) {
+                    markers.clear();
+                    contadorMarkers = 0;
+                    latitudes.clear();
+                    longitudes.clear();
+                    id_trolebuses.clear();
+                    fechas.clear();
+                    nombres.clear();
+                    placas.clear();
+                    tipos_alertas.clear();
+                    id_alertas.clear();
+                }
                 for (AlertaRegistro alerta : alertas){
 
                     //if(alerta.getTipo_alerta().equals("Emergencia"))
