@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".AboutUs"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar_acerca_de"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+        <TextView
+            android:id="@+id/title_aboutus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:gravity="start"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:text="@string/acerca"/>
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/texto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16sp"
+        android:textSize="20sp"
+        android:text="Este sistema ha sido elaborado por los estudiantes Jairo Reyes Aldeco, Isaac Sumuano Vázquez y Raúl Trinidad Ortíz de la Escuela Superior de Cómputo del Instituto Politécnico Nacional como parte de su proyecto de titulación de la carrera de ingeniería en sistemas computacionales." />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/ic_logoeki"/>
+
+</LinearLayout>

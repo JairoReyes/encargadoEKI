@@ -230,6 +230,10 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
         int id = item.getItemId();
 
         switch(id){
+            case R.id.acerca_de:
+                Intent intent2 = new Intent(Maps.this,AboutUs.class);
+                startActivity(intent2);
+                break;
             case R.id.registros:
                 Intent intent = new Intent(Maps.this,Registros.class);
                 startActivity(intent);
