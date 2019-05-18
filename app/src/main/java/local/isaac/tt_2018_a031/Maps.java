@@ -485,11 +485,12 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback,Naviga
                             //mMap.setOnCameraIdleListener(mClusterManager);
                             //mMap.setOnMarkerClickListener(mClusterManager);
                             //final CustomClusterRenderer renderer = new CustomClusterRenderer(Maps.this, mMap, mClusterManager);
-                            mClusterManager.setRenderer(renderer);
+                            mClusterManager.setRenderer(new CustomClusterRenderer(Maps.this, mMap, mClusterManager));
 
                             final List<Parada> parad = paradaRepository.obtenerParadasPorIdParadas();
                             //mClusterManager.removeItem();mClusterManager.
-                            mClusterManager.clearItems();
+                            //mClusterManager.clearItems();
+
                             for (Parada parada : parad){
                                 LatLng paradas = new LatLng(parada.getUbicacionLatitud(), parada.getUbicacionLongitud());
                                 paradaItem par = new paradaItem(paradas, parada.getNombre());
