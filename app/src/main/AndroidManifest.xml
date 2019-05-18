@@ -13,9 +13,9 @@
     <application
         android:name=".configbd.InitBD"
         android:allowBackup="true"
-        android:icon="@drawable/ic_logosolo"
+        android:icon="@drawable/ic_icono_jefe"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_logosolo"
+        android:roundIcon="@drawable/ic_icono_jefe"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
